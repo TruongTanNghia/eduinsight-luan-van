@@ -32,6 +32,17 @@ Bài toán: từ 7 mốc điểm (HK1 lớp 6, HK2 lớp 6, HK1 lớp 7, HK2 l�
 | TabNet | 0,872 | 0,653 | 0,763 | 0,734 | 0,531 | 0,448 | 0,667 | 0,580 |
 | Hồi quy tuyến tính | 0,909 | 0,652 | 0,772 | 0,757 | 0,605 | 0,535 | 0,701 | 0,583 |
 
+## Bảng 3. Loại bỏ thành phần của XEdu-KANFormer
+
+| Biến thể | RMSE | ΔRMSE | MAE | Macro-F1 | RMSE 3 môn thi |
+|---|---|---|---|---|---|
+| XEdu (bỏ đa nhiệm) | 0,570 ± 0,040 | -0.063 | 0,427 | – | 0,628 |
+| XEdu (GR-KAN → MLP) | 0,614 ± 0,042 | -0.019 | 0,466 | 0,803 | 0,696 |
+| XEdu (bỏ token hóa KAN) | 0,624 ± 0,042 | -0.009 | 0,472 | 0,785 | 0,708 |
+| XEdu-KANFormer | 0,634 ± 0,032 | +0.000 | 0,480 | 0,795 | 0,720 |
+| XEdu (nhỏ: d=16, 1 khối, dropout 0.2) | 0,635 ± 0,044 | +0.002 | 0,478 | 0,793 | 0,728 |
+| XEdu (bỏ chú ý liên môn) | 0,646 ± 0,042 | +0.012 | 0,486 | 0,785 | 0,730 |
+
 ## Kiểm định thống kê
 
 Friedman trên 120 khối (lần chạy × môn), 10 mô hình: χ² = 559,11, p = 1.24e-114. Khoảng cách tới hạn Nemenyi (α = 0,05): 1,24.

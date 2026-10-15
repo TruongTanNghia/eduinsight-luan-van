@@ -15,7 +15,7 @@ import { apiSend, useApi, useMeta } from "@/lib/api";
 import { fmt, LEVEL_TONE, sgn } from "@/lib/format";
 
 type Pred = {
-  id: string; available: boolean; reason?: string; model: string; models: string[]; latestGrade: number;
+  id: string; available: boolean; reason?: string; model: string; models: string[]; latestGrade: number; latestLabel?: string;
   predicted: { key: string; name: string; short: string; value: number; lo: number; hi: number; latest: number; actual: number | null }[];
   levelProba: Record<string, number> | null; actualLevel: string | null; hasActual9: boolean; floor: number; floorSource: string; intervalNote: string;
   facts: Record<string, unknown> & { tong_3_mon: number; diem_3_mon_thi: Record<string, number>; nhom_dinh_huong: string; muc_ket_qua_hoc_tap_du_doan_lop_9: string; diem_trung_binh_du_doan_lop_9: number;
@@ -104,7 +104,7 @@ function Body({ p, student, schools, llms }: { p: Pred; student: Student; school
             action={<Tag tone="cobalt">Dự đoán mô hình</Tag>} />
           <div role="img" aria-label={`Điểm dự đoán 8 môn lớp 9, ĐTB dự đoán ${fmt(f.diem_trung_binh_du_doan_lop_9)}`} className="flex h-[230px] items-end gap-2.5 border-b-[2.5px] border-ink px-1">
             {p.predicted.map((s) => (
-              <div key={s.key} title={`${s.name}: dự đoán ${fmt(s.value, 1)} (${fmt(s.lo, 1)}–${fmt(s.hi, 1)}); lớp ${p.latestGrade}: ${fmt(s.latest, 1)}${s.actual !== null ? `; thực tế lớp 9: ${fmt(s.actual, 1)}` : ""}`} className="relative flex h-full flex-1 flex-col items-center justify-end gap-1">
+              <div key={s.key} title={`${s.name}: dự đoán ${fmt(s.value, 1)} (${fmt(s.lo, 1)}–${fmt(s.hi, 1)}); ${p.latestLabel ?? `lớp ${p.latestGrade}`}: ${fmt(s.latest, 1)}${s.actual !== null ? `; thực tế lớp 9: ${fmt(s.actual, 1)}` : ""}`} className="relative flex h-full flex-1 flex-col items-center justify-end gap-1">
                 <span className="num text-[11px] font-bold" style={{ marginBottom: Math.max(0, hb(s.hi) - hb(s.value)) }}>{fmt(s.value, 1)}</span>
                 <span className="relative block w-full rounded-t-[10px] border-[2.5px] border-b-0 border-ink bg-cobalt" style={{ height: hb(s.value) }}>
                   <span aria-hidden="true" className="absolute left-1/2 w-0.5 -translate-x-1/2 bg-ink" style={{ bottom: `${hb(s.lo)}px`, height: `${hb(s.hi) - hb(s.lo)}px` }} />
@@ -142,14 +142,14 @@ function Body({ p, student, schools, llms }: { p: Pred; student: Student; school
           <Kv k="Điểm sàn đang so" v={<>{fmt(p.floor, 1)}<span className="ml-2 text-xs font-medium text-muted">{p.floorSource}</span></>} />
           <Kv k="Chênh lệch" v={<span className={ts.chenh_lech >= 0 ? "text-positive-text" : "text-negative-text"}>{sgn(ts.chenh_lech, 1)} · {ts.nhan_dinh}</span>} />
         </div>
-        {f.xu_huong && <p className="m-0 text-[13px] font-medium">Xu hướng lớp 6 → {p.latestGrade}: ĐTB <strong>{f.xu_huong.diem_trung_binh?.xu_huong.toLowerCase()}</strong> ({sgn(f.xu_huong.diem_trung_binh?.thay_doi, 1)}), tổng 3 môn thi <strong>{f.xu_huong.tong_3_mon_thi?.xu_huong.toLowerCase()}</strong> ({sgn(f.xu_huong.tong_3_mon_thi?.thay_doi, 1)}).</p>}
+        {f.xu_huong && <p className="m-0 text-[13px] font-medium">Xu hướng điểm cả năm các lớp trước: ĐTB <strong>{f.xu_huong.diem_trung_binh?.xu_huong.toLowerCase()}</strong> ({sgn(f.xu_huong.diem_trung_binh?.thay_doi, 1)}), tổng 3 môn thi <strong>{f.xu_huong.tong_3_mon_thi?.xu_huong.toLowerCase()}</strong> ({sgn(f.xu_huong.tong_3_mon_thi?.thay_doi, 1)}).</p>}
         <SchoolsBlock schools={schools} total={total} />
       </Sticker>
 
       <section className="grid grid-cols-[repeat(auto-fit,minmax(min(380px,100%),1fr))] gap-6">
         <Sticker className="flex flex-col gap-3">
-          <StickerHeader title="Điểm sáng" description={`Môn nổi bật nhất so với bạn cùng khối ở lớp ${p.latestGrade} · thực tế, không dùng mô hình`} />
-          {f.diem_sang.map((s) => <div key={s.mon} className="flex items-center justify-between rounded-lg border-[2.5px] border-ink bg-mint px-4 py-2.5"><strong>{s.mon}</strong><span className="num font-bold">{fmt(s.diem, 1)} · lớp {s.lop}</span></div>)}
+          <StickerHeader title="Điểm sáng" description={`Môn nổi bật nhất so với bạn cùng khối ở ${p.latestLabel ?? `lớp ${p.latestGrade}`} · thực tế, không dùng mô hình`} />
+          {f.diem_sang.map((s) => <div key={s.mon} className="flex items-center justify-between rounded-lg border-[2.5px] border-ink bg-mint px-4 py-2.5"><strong>{s.mon}</strong><span className="num font-bold">{fmt(s.diem, 1)} · {p.latestLabel ?? `lớp ${s.lop}`}</span></div>)}
         </Sticker>
         <Sticker className="flex flex-col gap-3">
           <StickerHeader title="Mục tiêu khả thi cho lớp 9" description={f.muc_tieu_tiep_theo ? `Để đạt mức ${f.muc_tieu_tiep_theo.muc} theo Thông tư 22 · căn cứ ${f.muc_tieu_tiep_theo.can_cu}` : "Dự kiến ở mức Tốt: duy trì kết quả hiện tại"} />
