@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>EduInsight AI — Tổng quan</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#FFF4D6;color:#111111;font-family:'Bricolage Grotesque',system-ui,sans-serif}
+a{color:#1D3FCC}a:hover{color:#111111}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.stk{border:2.5px solid #111111;border-radius:18px;box-shadow:5px 5px 0 #111111;background:#FFFFFF;box-sizing:border-box;min-width:0}
+.pillnav{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:2.5px solid #111111;border-radius:999px;background:#FFFFFF;font-weight:700;font-size:14px;text-decoration:none;color:#111111;box-sizing:border-box}
+.pillnav:hover{color:#111111;box-shadow:3px 3px 0 #111111}
+.pillnav.on{background:#2B59FF;color:#FFFFFF;box-shadow:3px 3px 0 #111111}
+.tag{display:inline-flex;align-items:center;padding:3px 10px;border:2px solid #111111;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
+.h2{margin:0;font-size:22px;font-weight:800;letter-spacing:-.02em}
+.ax{font-family:'JetBrains Mono',monospace;font-size:12px;fill:#111111}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border:2.5px solid #111111;border-radius:12px;background:#111111;color:#FFD23F;font:inherit;font-weight:800;font-size:14px;text-decoration:none;box-sizing:border-box}
+.btn:hover{color:#FFFFFF}
+.fl{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700}
+.sel{height:44px;border:2.5px solid #111111;border-radius:12px;background:#FFFFFF;font:inherit;font-weight:600;font-size:14px;padding:0 10px;color:#111111;min-width:120px}
+</style>
+</helmet>
+<div style="min-height: 100vh; background-color: #FFF4D6; background-image: radial-gradient(#E8D9AE 1.2px, transparent 1.2px); background-size: 22px 22px; display: flex; flex-direction: column">
+<header style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; padding: 22px 32px 0; max-width: 1400px; width: 100%; margin: 0 auto; box-sizing: border-box">
+<div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap">
+<a href="Main.dc.html" style="display: inline-block; background: #111111; color: #FFD23F; font-weight: 800; font-size: 22px; padding: 7px 14px; border-radius: 12px; transform: rotate(-2.5deg); letter-spacing: -0.02em; text-decoration: none">EduInsight<span style="color: #FF5A36">!</span></a>
+<nav aria-label="Điều hướng chính" style="display: flex; gap: 8px; flex-wrap: wrap"><a class="pillnav on" href="Main.dc.html" aria-current="page">Tổng quan</a><a class="pillnav" href="Students.dc.html">Học sinh</a><a class="pillnav" href="ClassAnalysis.dc.html">Lớp học</a><a class="pillnav" href="Prediction.dc.html">Dự đoán</a><a class="pillnav" href="ModelEval.dc.html">Mô hình</a><a class="pillnav" href="Reports.dc.html">Báo cáo</a><a class="pillnav" href="DataManagement.dc.html">Dữ liệu</a></nav>
+</div>
+<span aria-label="Tài khoản giáo viên" style="width: 46px; height: 46px; border-radius: 50%; border: 2.5px solid #111111; background: #FF8FC7; display: flex; align-items: center; justify-content: center; font-weight: 800">GV</span>
+</header>
+
+<main style="width: 100%; max-width: 1400px; margin: 0 auto; padding: 26px 32px 64px; box-sizing: border-box; display: flex; flex-direction: column; gap: 28px">
+
+<form aria-label="Bộ lọc" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end">
+<label class="fl">Năm học<select class="sel"><option>2025–2026</option><option>2024–2025</option></select></label>
+<label class="fl">Khối<select class="sel"><option>Tất cả</option><option>Khối 8</option><option>Khối 9</option></select></label>
+<label class="fl">Lớp<select class="sel"><option>Tất cả lớp</option><option>9A1</option><option>9A2</option></select></label>
+<label class="fl">Học kỳ<select class="sel"><option>HK2</option><option>HK1</option><option>Cả năm</option></select></label>
+<label class="fl">Môn học<select class="sel"><option>Tất cả môn</option><option>Toán</option><option>Ngữ văn</option><option>Tiếng Anh</option></select></label>
+<span class="mono" style="margin-left: auto; font-size: 12px; align-self: center">Nguồn: ds-2026.09.1 · cập nhật 08/10/2026</span>
+</form>
+
+<section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(520px, 100%), 1fr)); gap: 24px; align-items: stretch">
+<div class="stk" style="background: #FFD23F; padding: 34px 36px; display: flex; flex-direction: column; gap: 16px; justify-content: center">
+<span class="tag" style="background: #FFFFFF; align-self: flex-start; transform: rotate(-2deg)">Dữ liệu minh họa · HK2 2025–2026</span>
+<h1 style="margin: 0; font-size: 54px; line-height: 1.02; font-weight: 800; letter-spacing: -0.035em; text-wrap: balance">Trường mình tăng <span style="background: #111111; color: #FFD23F; padding: 0 10px; border-radius: 10px; display: inline-block; transform: rotate(-1.5deg)">+0,07</span> điểm học kỳ này</h1>
+<p style="margin: 0; font-size: 18px; line-height: 1.5; font-weight: 500; max-width: 52ch">96 bạn tiến bộ rõ rệt. 41 bạn đang đi xuống, chủ yếu ở Toán và Tiếng Anh. Có 18 bạn thầy cô nên xem lại sớm.</p>
+<div style="display: flex; gap: 10px; flex-wrap: wrap"><a class="btn" href="Students.dc.html">Xem 18 bạn cần chú ý</a><a class="btn" href="Reports.dc.html" style="background: #FFFFFF; color: #111111">Xuất báo cáo</a></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 18px">
+<sc-for list="{{stats}}" as="s">
+<div class="stk" style="background: {{s.bg}}; color: {{s.fg}}; padding: 18px 20px; display: flex; flex-direction: column; gap: 4px; justify-content: space-between; transform: rotate({{s.rot}}deg); min-height: 140px">
+<span style="font-size: 14px; font-weight: 700">{{s.label}}</span>
+<span style="font-size: 52px; font-weight: 800; line-height: 1; letter-spacing: -0.04em">{{s.v}}</span>
+<span style="font-size: 12.5px; font-weight: 500">{{s.def}}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(560px, 100%), 1fr)); gap: 24px">
+<div class="stk" style="padding: 24px">
+<div style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: center"><h2 class="h2">Điểm trung bình qua 4 kỳ</h2><div style="display: flex; gap: 8px"><span class="tag" style="background: #2B59FF; color: #FFFFFF">Toàn trường</span><span class="tag" style="background: #FF8FC7">Khối 9</span></div></div>
+<svg viewBox="0 0 600 260" style="width: 100%; height: auto; margin-top: 14px" role="img" aria-label="ĐTB toàn trường 6,84 → 7,12; khối 9 6,71 → 7,02">
+<sc-for list="{{lc.grid}}" as="g"><line x1="46" x2="586" y1="{{g.y}}" y2="{{g.y}}" stroke="#EADFC3" style="stroke-width: 1.5"></line><text class="ax" x="38" y="{{g.ty}}" style="text-anchor: end">{{g.label}}</text></sc-for>
+<sc-for list="{{lc.xs}}" as="x"><text class="ax" x="{{x.x}}" y="252" style="text-anchor: middle; font-weight: 700">{{x.label}}</text></sc-for>
+<polyline points="{{lc.b}}" fill="none" stroke="#FF8FC7" style="stroke-width: 5; stroke-linejoin: round; stroke-linecap: round"></polyline>
+<polyline points="{{lc.a}}" fill="none" stroke="#2B59FF" style="stroke-width: 6; stroke-linejoin: round; stroke-linecap: round"></polyline>
+<sc-for list="{{lc.pa}}" as="p"><circle cx="{{p.x}}" cy="{{p.y}}" r="9" fill="#FFD23F" stroke="#111111" style="stroke-width: 2.5"><title>{{p.tip}}</title></circle><text x="{{p.x}}" y="{{p.ly}}" style="text-anchor: middle; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 16px; fill: #111111">{{p.label}}</text></sc-for>
+</svg>
+</div>
+<div class="stk" style="padding: 24px">
+<div style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: center"><h2 class="h2">Môn nào mạnh, môn nào cần đỡ?</h2><span class="tag" style="background: #FF5A36">Cam = dưới ĐTB chung ≥ 0,3</span></div>
+<div style="height: 220px; display: flex; align-items: flex-end; gap: 10px; margin-top: 20px; border-bottom: 2.5px solid #111111; padding: 0 4px">
+<sc-for list="{{subs}}" as="s"><div title="{{s.tip}}" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; height: 100%"><span class="mono" style="font-size: 12.5px; font-weight: 700">{{s.v}}</span><span style="display: block; width: 100%; height: {{s.h}}px; background: {{s.c}}; border: 2.5px solid #111111; border-bottom: 0; border-radius: 10px 10px 0 0; box-sizing: border-box"></span></div></sc-for>
+</div>
+<div style="display: flex; gap: 10px; padding: 8px 4px 0"><sc-for list="{{subs}}" as="s"><span style="flex: 1; text-align: center; font-size: 12.5px; font-weight: 700">{{s.name}}</span></sc-for></div>
+</div>
+</section>
+
+<section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 24px">
+<div class="stk" style="padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<h2 class="h2">Điểm của 412 bạn</h2>
+<div style="display: flex; align-items: flex-end; gap: 6px; height: 170px; border-bottom: 2.5px solid #111111">
+<sc-for list="{{hist}}" as="b"><div title="{{b.tip}}" style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; height: 100%"><span class="mono" style="font-size: 11px; font-weight: 700">{{b.n}}</span><span style="display: block; width: 100%; height: {{b.h}}px; background: {{b.c}}; border: 2px solid #111111; border-bottom: 0; border-radius: 6px 6px 0 0; box-sizing: border-box"></span></div></sc-for>
+</div>
+<div style="display: flex; gap: 6px"><sc-for list="{{hist}}" as="b"><span class="mono" style="flex: 1; text-align: center; font-size: 10.5px; font-weight: 700">{{b.label}}</span></sc-for></div>
+<span style="font-size: 13px; font-weight: 500">Cột cam: ĐTB dưới 5,5 (23 bạn)</span>
+</div>
+<div class="stk" style="padding: 24px; display: flex; flex-direction: column; gap: 16px">
+<h2 class="h2">Xếp loại theo TT22</h2>
+<div style="display: flex; height: 52px; border: 2.5px solid #111111; border-radius: 14px; overflow: hidden"><sc-for list="{{grp}}" as="g"><span title="{{g.tip}}" style="width: {{g.pct}}%; background: {{g.c}}; border-right: 2.5px solid #111111"></span></sc-for></div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px"><sc-for list="{{grp}}" as="g"><div style="display: flex; align-items: center; gap: 10px"><span style="width: 18px; height: 18px; border: 2px solid #111111; border-radius: 6px; background: {{g.c}}; flex: none"></span><span style="font-weight: 700; font-size: 15px">{{g.name}}</span><span class="mono" style="margin-left: auto; font-weight: 700; font-size: 15px">{{g.n}}</span></div></sc-for></div>
+<span style="font-size: 13px; font-weight: 500">Tốt + Khá: 264 bạn (64,1%)</span>
+</div>
+<div class="stk" style="padding: 24px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; align-items: center"><h2 class="h2">8 lớp, ai dẫn đầu?</h2><span class="tag" style="background: #FFFFFF">▲ tiến bộ ▼ sa sút</span></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(96px, 100%), 1fr)); gap: 10px">
+<sc-for list="{{classes}}" as="c"><a href="ClassAnalysis.dc.html" style="display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border: 2.5px solid #111111; border-radius: 14px; background: {{c.bg}}; text-decoration: none; color: #111111; min-height: 44px"><span style="font-size: 13px; font-weight: 700">{{c.name}}</span><span style="font-size: 24px; font-weight: 800; letter-spacing: -0.03em">{{c.v}}</span><span class="mono" style="font-size: 11.5px; font-weight: 700">▲{{c.u}} ▼{{c.d}}</span></a></sc-for>
+</div>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<h2 class="h2" style="font-size: 30px">Các bạn cần thầy cô xem lại</h2>
+<span style="font-size: 13.5px; font-weight: 500">Chỉ dựa trên điểm số · không dùng để đánh giá hoàn cảnh hay năng lực</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 18px">
+<sc-for list="{{att}}" as="r">
+<article class="stk" style="padding: 18px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 12px"><span aria-hidden="true" style="width: 46px; height: 46px; border-radius: 14px; border: 2.5px solid #111111; background: {{r.bg}}; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; flex: none">{{r.ini}}</span><div style="display: flex; flex-direction: column; min-width: 0"><strong style="font-size: 16px">{{r.name}}</strong><span class="mono" style="font-size: 12px">{{r.cls}}</span></div></div>
+<span class="tag" style="background: {{r.tag}}; align-self: flex-start">{{r.reason}}</span>
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 13px; font-weight: 500">ĐTB HK2</span><span style="display: flex; gap: 8px; align-items: baseline"><span style="font-size: 26px; font-weight: 800">{{r.avg}}</span><span class="mono" style="font-size: 13px; font-weight: 700; color: {{r.dc}}">{{r.delta}}</span></span></div>
+<a href="StudentProfile.dc.html" class="btn" style="background: #FFFFFF; color: #111111; min-height: 40px">Mở hồ sơ</a>
+</article>
+</sc-for>
+</div>
+</section>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2150}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const f = (v, d) => v.toFixed(d == null ? 2 : d).replace('.', ',');
+    const Y_ = '#FFD23F', BL = '#2B59FF', TO = '#FF5A36', MI = '#3DDC97', PK = '#FF8FC7', LI = '#B8A4FF';
+    const stats = [
+      { label: 'Điểm trung bình', v: '7,12', def: 'toàn trường, thang 10', bg: BL, fg: '#FFFFFF', rot: -1.5 },
+      { label: 'Bạn tiến bộ', v: '96', def: 'ĐTB tăng ≥ 0,3 · 23,3%', bg: MI, fg: '#111111', rot: 1.2 },
+      { label: 'Bạn đi xuống', v: '41', def: 'ĐTB giảm ≥ 0,3 · 10,0%', bg: TO, fg: '#111111', rot: 1 },
+      { label: 'Cần xem lại', v: '18', def: '≥ 1 tiêu chí cảnh báo', bg: LI, fg: '#111111', rot: -1.2 }
+    ];
+    const sem = ['HK1·8', 'HK2·8', 'HK1·9', 'HK2·9'];
+    const A = [6.84, 6.97, 7.05, 7.12], B = [6.71, 6.88, 6.93, 7.02];
+    const X = (i) => 90 + i * 160, Y = (v) => +(225 - (v - 6.6) / 0.6 * 190).toFixed(1);
+    const pa = A.map((v, i) => ({ x: X(i), y: Y(v), ly: Y(v) - 18, label: f(v), tip: sem[i] + ': ' + f(v) }));
+    const lc = { pa, grid: [6.6, 6.8, 7.0, 7.2].map((v) => ({ y: Y(v), ty: Y(v) + 4, label: f(v, 1) })), xs: sem.map((s, i) => ({ x: X(i), label: s })), a: pa.map((p) => p.x + ',' + p.y).join(' '), b: B.map((v, i) => X(i) + ',' + Y(v)).join(' ') };
+    const cyc = [BL, MI, PK, LI, Y_];
+    let k = 0;
+    const subs = [['Toán', 6.62], ['Văn', 6.95], ['Anh', 6.71], ['KHTN', 6.88], ['LS&ĐL', 7.31], ['GDCD', 8.02], ['Tin', 7.64], ['CN', 7.40]].map(([n, v]) => { const low = v <= 6.82; return { name: n, v: f(v), h: Math.round((v - 5) / 3.5 * 170), c: low ? TO : cyc[k++ % cyc.length], tip: n + ': ' + f(v) }; });
+    const H = [['<5', 9], ['5', 14], ['5,5', 27], ['6', 46], ['6,5', 71], ['7', 84], ['7,5', 72], ['8', 51], ['8,5', 28], ['≥9', 10]];
+    const hist = H.map(([l, n], i) => ({ label: l, n, h: Math.round(n / 84 * 130), c: i < 2 ? TO : (i % 2 ? Y_ : BL), tip: 'ĐTB ' + l + ': ' + n + ' bạn' }));
+    const grp = [['Tốt', 96, BL], ['Khá', 168, MI], ['Đạt', 129, Y_], ['Chưa đạt', 19, TO]].map(([name, n, c]) => ({ name, n, c, pct: (n / 412 * 100).toFixed(2), tip: name + ': ' + n }));
+    const classes = [['9A1', 7.48, 14, 5], ['9A2', 7.21, 12, 6], ['9A3', 6.86, 11, 9], ['9A4', 6.79, 10, 7], ['8A1', 7.35, 13, 4], ['8A2', 7.02, 12, 5], ['8A3', 6.91, 13, 3], ['8A4', 6.88, 11, 2]].map(([name, v, u, d]) => ({ name, v: f(v), u, d, bg: v >= 7.3 ? MI : v >= 7 ? '#FFFFFF' : v >= 6.85 ? '#FFE9A8' : '#FFC2B3' }));
+    const att = [
+      ['Trần Quốc Bảo', 'TB', '9A3 · HS-2021-0212', 'ĐTB giảm 3 kỳ liên tiếp', '5,90', '−0,40', TO, PK],
+      ['Đỗ Ngọc Lan', 'NL', '9A1 · HS-2021-0108', 'Toán giảm 1,2', '7,10', '−0,50', TO, MI],
+      ['Lê Thu Hà', 'TH', '9A4 · HS-2021-0261', 'Tiếng Anh giảm 1,6', '6,80', '−0,30', Y_, LI],
+      ['Phạm Gia Huy', 'GH', '9A3 · HS-2021-0230', 'ĐTB dưới 5,5', '5,20', '−0,10', TO, Y_],
+      ['Nguyễn Minh Anh', 'MA', '9A2 · HS-2021-0147', 'Tiếng Anh giảm 3 kỳ', '7,90', '+0,16', Y_, BL],
+      ['Võ Minh Khang', 'MK', '8A2 · HS-2022-0318', 'Thiếu điểm 2 môn', '6,40', '—', '#FFFFFF', MI]
+    ].map((r) => ({ name: r[0], ini: r[1], cls: r[2], reason: r[3], avg: r[4], delta: r[5], tag: r[6], bg: r[7], dc: r[5][0] === '−' ? '#C2290F' : r[5][0] === '+' ? '#0A7A4B' : '#5A5444' }));
+    return { stats, lc, subs, hist, grp, classes, att };
+  }
+}
+</script>
+</body>
+</html>

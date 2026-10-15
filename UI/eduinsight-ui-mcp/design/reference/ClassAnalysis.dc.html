@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>EduInsight AI — Phân tích lớp học</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#FFF8E6;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#111111}
+a{color:#2B59FF}a:hover{color:#2537C9}
+.ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nav{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;color:#CBC7F7;text-decoration:none;font-size:14px;min-height:44px;box-sizing:border-box}
+.nav:hover{background:rgba(255,255,255,.12);color:#FFFFFF}
+.nav.on{background:linear-gradient(90deg,rgba(255,255,255,.24),rgba(255,255,255,.08));box-shadow:0 8px 20px -8px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.18);color:#FFFFFF;font-weight:600}
+.card{background:rgba(255,255,255,.92);border:1px solid #ECE8FB;border-radius:16px;padding:20px;box-sizing:border-box;min-width:0;box-shadow:0 1px 2px rgba(76,29,149,.05),0 12px 32px -16px rgba(109,40,217,.28)}
+h1{background:linear-gradient(90deg,#4C1D95 0%,#C026D3 55%,#F97316 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+polyline{filter:drop-shadow(0 4px 5px rgba(109,40,217,.28))}
+.h2{margin:0;font-size:15px;font-weight:600;color:#111111}
+.sub{margin:4px 0 0;font-size:12.5px;color:#5A5444;line-height:1.5}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.fl{display:flex;flex-direction:column;gap:4px;font-size:12px;color:#5A5444;font-weight:500}
+.sel{height:44px;border:1px solid #D9CBA3;border-radius:8px;background:#FFFFFF;padding:0 12px;font:inherit;font-size:13.5px;color:#111111;min-width:130px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.tb{width:100%;border-collapse:collapse;font-size:13.5px}
+.tb th{text-align:left;font-size:12px;font-weight:600;color:#5A5444;padding:10px 12px;border-bottom:1px solid #EADFC3;white-space:nowrap;background:#FFFBEF}
+.tb td{padding:10px 12px;border-bottom:1px solid #F6EFD9;vertical-align:middle;white-space:nowrap}
+.lg{display:flex;align-items:center;gap:6px;font-size:12px;color:#3A3528}
+.sw{width:10px;height:10px;border-radius:3px;flex:none}
+.seg{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:16px;border-radius:10px;border:1.5px solid #EADFC3;background:#FFFFFF;font:inherit;text-align:left;cursor:pointer;min-height:44px}
+.seg:hover{border-color:#A89C7C}
+.seg.on{border-color:#C026D3;background:linear-gradient(135deg,#F5F3FF,#FDF2F8);box-shadow:0 8px 18px -10px rgba(192,38,211,.55)}
+.rowb{display:grid;grid-template-columns:84px 1fr 40px;align-items:center;gap:12px;border:0;background:none;font:inherit;color:#111111;padding:6px 8px;border-radius:8px;cursor:pointer;text-align:left;min-height:36px}
+.rowb:hover{background:#FFF8E6}
+.rowb.on{background:#FFE9A8}
+.clr{border:1px solid #D9CBA3;background:#FFFFFF;border-radius:8px;font:inherit;font-size:12.5px;padding:0 12px;min-height:36px;cursor:pointer;color:#111111}
+
+body{font-family:'Bricolage Grotesque',system-ui,sans-serif !important;color:#111111;background:#FFF4D6}
+a{color:#1D3FCC}a:hover{color:#111111}
+.num,.mono,.ax{font-family:'JetBrains Mono',ui-monospace,monospace !important}
+.card{background:#FFFFFF !important;border:2.5px solid #111111 !important;border-radius:18px !important;box-shadow:5px 5px 0 #111111 !important}
+h1{background:none !important;-webkit-background-clip:border-box !important;background-clip:border-box !important;color:#111111 !important;font-weight:800 !important;letter-spacing:-.03em !important}
+.h2{font-weight:800 !important;font-size:18px;letter-spacing:-.01em;color:#111111}
+.sub{color:#4A4436}
+.chip{border:2px solid #111111}
+.sel,.fsel{border:2.5px solid #111111 !important;border-radius:12px !important;font-weight:600}
+.tb th{background:#FFE9A8 !important;color:#111111 !important;border-bottom:2.5px solid #111111 !important}
+.tb td{border-bottom:1.5px solid #EADFC3 !important}
+polyline{filter:none !important}
+.tog{border:2.5px solid #111111 !important;font-weight:700;color:#111111}
+.tog.on{background:#2B59FF !important;color:#FFFFFF !important;box-shadow:3px 3px 0 #111111 !important}
+.seg,.opt{border:2.5px solid #111111 !important;box-shadow:none}
+.seg.on,.opt.on{background:#FFD23F !important;border-color:#111111 !important;box-shadow:4px 4px 0 #111111 !important}
+.pg{border:2.5px solid #111111 !important;font-weight:700}
+.pg.on{background:#111111 !important;color:#FFD23F !important}
+.segc{background:#FFFFFF !important;border:2.5px solid #111111}
+.segc button.on{background:#2B59FF !important;color:#FFFFFF !important;box-shadow:none !important}
+.btn{border:2.5px solid #111111 !important;border-radius:12px !important;font-weight:800 !important;box-shadow:3px 3px 0 #111111 !important}
+.stat,.blk{border:2.5px solid #111111 !important;border-radius:14px !important}
+.rowb.on{background:#FFD23F !important}
+.clr{border:2.5px solid #111111 !important;font-weight:700}
+.k{color:#111111 !important;font-weight:600 !important}
+.pillnav{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:2.5px solid #111111;border-radius:999px;background:#FFFFFF;font-weight:700;font-size:14px;text-decoration:none;color:#111111;box-sizing:border-box}
+.pillnav:hover{color:#111111;box-shadow:3px 3px 0 #111111}
+.pillnav.on{background:#2B59FF;color:#FFFFFF;box-shadow:3px 3px 0 #111111}
+</style>
+</helmet>
+<div style="min-height: 100vh; background-color: #FFF4D6; background-image: radial-gradient(#E8D9AE 1.2px, transparent 1.2px); background-size: 22px 22px; display: flex; flex-direction: column">
+<header style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; padding: 22px 32px 0; max-width: 1400px; width: 100%; margin: 0 auto; box-sizing: border-box">
+<div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap">
+<a href="Main.dc.html" style="display: inline-block; background: #111111; color: #FFD23F; font-weight: 800; font-size: 22px; padding: 7px 14px; border-radius: 12px; transform: rotate(-2.5deg); letter-spacing: -0.02em; text-decoration: none">EduInsight<span style="color: #FF5A36">!</span></a>
+<nav aria-label="Điều hướng chính" style="display: flex; gap: 8px; flex-wrap: wrap"><a class="pillnav" href="Main.dc.html">Tổng quan</a><a class="pillnav" href="Students.dc.html">Học sinh</a><a class="pillnav on" href="ClassAnalysis.dc.html" aria-current="page">Lớp học</a><a class="pillnav" href="Prediction.dc.html">Dự đoán</a><a class="pillnav" href="ModelEval.dc.html">Mô hình</a><a class="pillnav" href="Reports.dc.html">Báo cáo</a><a class="pillnav" href="DataManagement.dc.html">Dữ liệu</a></nav>
+</div>
+<span aria-label="Tài khoản giáo viên" style="width: 46px; height: 46px; border-radius: 50%; border: 2.5px solid #111111; background: #FF8FC7; display: flex; align-items: center; justify-content: center; font-weight: 800">GV</span>
+</header>
+<main style="width: 100%; max-width: 1400px; margin: 0 auto; min-width: 0; padding: 28px 32px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+<h1 style="margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.01em">Phân tích lớp 9A2</h1>
+<span class="chip" style="background: #FFD23F; color: #111111">Dữ liệu minh họa</span>
+</div>
+<p style="margin: 0; font-size: 13.5px; color: #5A5444">51 học sinh · GVCN: [Tên giáo viên] · So sánh HK2 với HK1 năm học 2025–2026</p>
+</div>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end">
+<label class="fl">Lớp<select class="sel"><option>9A2</option><option>9A1</option><option>9A3</option><option>9A4</option></select></label>
+<label class="fl">So sánh<select class="sel"><option>HK2 với HK1</option><option>HK1 với HK2 năm trước</option></select></label>
+</div>
+</header>
+
+<section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 14px">
+<div class="card" style="padding: 16px 18px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12.5px; color: #3A3528; font-weight: 500">ĐTB lớp HK2</span><span class="num" style="font-size: 28px; font-weight: 600">7,21</span><span style="font-size: 12px; color: #5A5444">HK1: 7,09 · khối 9: 7,02</span></div>
+<div class="card" style="padding: 16px 18px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12.5px; color: #3A3528; font-weight: 500">Thay đổi so với HK1</span><span class="num" style="font-size: 28px; font-weight: 600; color: #067647">+0,12</span><span style="font-size: 12px; color: #5A5444">dưới ngưỡng ±0,3 → lớp ổn định</span></div>
+<div class="card" style="padding: 16px 18px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12.5px; color: #3A3528; font-weight: 500">Mức Tốt + Khá</span><span class="num" style="font-size: 28px; font-weight: 600">66,7%</span><span style="font-size: 12px; color: #5A5444">34 / 51 học sinh</span></div>
+<div class="card" style="padding: 16px 18px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 12.5px; color: #3A3528; font-weight: 500">Cần giáo viên theo dõi</span><span class="num" style="font-size: 28px; font-weight: 600; color: #B54708">5</span><span style="font-size: 12px; color: #5A5444">thỏa ≥ 1 tiêu chí cảnh báo</span></div>
+</section>
+
+<section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(520px, 100%), 1fr)); gap: 16px">
+
+<div class="card">
+<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px">
+<div><h2 class="h2">ĐTB môn: HK1 và HK2</h2><p class="sub">Lớp 9A2 · trục từ 5,0</p></div>
+<div style="display: flex; gap: 12px"><span class="lg"><span class="sw" style="background: #FF8FC7"></span>HK1</span><span class="lg"><span class="sw" style="background: #2B59FF"></span>HK2</span></div>
+</div>
+<div style="margin-top: 18px; height: 210px; display: flex; align-items: flex-end; gap: 12px; border-bottom: 1px solid #D9CBA3; padding: 0 4px">
+<sc-for list="{{subj}}" as="s" hint-placeholder-count="8">
+<div style="flex: 1; display: flex; gap: 3px; align-items: flex-end; height: 100%" title="{{s.tip}}">
+<div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px"><span class="num" style="font-size: 10.5px; color: #5A5444">{{s.a}}</span><div style="width: 100%; height: {{s.ha}}px; background: #FF8FC7; border: 2px solid #111111; border-bottom: 0; box-sizing: border-box; border-radius: 6px 6px 0 0"></div></div>
+<div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px"><span class="num" style="font-size: 10.5px; font-weight: 600">{{s.b}}</span><div style="width: 100%; height: {{s.hb}}px; background: #2B59FF; border: 2px solid #111111; border-bottom: 0; box-sizing: border-box; border-radius: 6px 6px 0 0"></div></div>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 12px; padding: 8px 4px 0"><sc-for list="{{subj}}" as="s"><span style="flex: 1; text-align: center; font-size: 11.5px; color: #3A3528">{{s.name}}</span></sc-for></div>
+</div>
+
+<div class="card">
+<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px">
+<div><h2 class="h2">Phân bố mức kết quả học tập</h2><p class="sub">Số học sinh theo mức, TT22</p></div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap"><span class="lg"><span class="sw" style="background: #1D3FCC"></span>Tốt</span><span class="lg"><span class="sw" style="background: #3DDC97"></span>Khá</span><span class="lg"><span class="sw" style="background: #FFE08A"></span>Đạt</span><span class="lg"><span class="sw" style="background: #FF5A36"></span>Chưa đạt</span></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 18px; margin-top: 26px">
+<sc-for list="{{dist}}" as="d">
+<div style="display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: center">
+<span style="font-size: 13px; font-weight: 600">{{d.sem}}</span>
+<span style="display: flex; height: 36px; border-radius: 6px; overflow: hidden">
+<sc-for list="{{d.parts}}" as="p"><span title="{{p.tip}}" style="width: {{p.pct}}%; background: {{p.color}}; color: {{p.fg}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600" class="num">{{p.n}}</span></sc-for>
+</span>
+</div>
+</sc-for>
+</div>
+<p class="sub" style="margin-top: 18px">HK2: Tốt tăng từ 11 lên 13, Chưa đạt giảm từ 3 xuống 2.</p>
+</div>
+
+</section>
+
+<section class="card">
+<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; align-items: flex-start">
+<div><h2 class="h2">Tiến bộ, ổn định và sa sút</h2><p class="sub">Nhấn một nhóm hoặc một môn để lọc danh sách học sinh bên dưới · ngưỡng ±0,3</p></div>
+<sc-if value="{{hasFilter}}" hint-placeholder-val="{{ false }}"><button class="clr" onClick="{{clear}}">Bỏ lọc: {{filterLabel}}</button></sc-if>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 24px; margin-top: 16px">
+<div style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; height: 14px; border-radius: 4px; overflow: hidden" aria-hidden="true">
+<sc-for list="{{groups}}" as="g"><span style="width: {{g.pct}}%; background: {{g.color}}"></span></sc-for>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{groups}}" as="g">
+<button class="{{g.cls}}" aria-pressed="{{g.pressed}}" onClick="{{g.pick}}">
+<span class="lg"><span class="sw" style="background: {{g.color}}"></span>{{g.name}}</span>
+<span class="num" style="font-size: 24px; font-weight: 600">{{g.n}}</span>
+<span class="num" style="font-size: 12px; color: #5A5444">{{g.pctLabel}}</span>
+</button>
+</sc-for>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12.5px; font-weight: 600; color: #3A3528; padding: 0 8px 6px">Số học sinh giảm ≥ 0,3 theo môn</span>
+<sc-for list="{{drops}}" as="d">
+<button class="{{d.cls}}" aria-pressed="{{d.pressed}}" onClick="{{d.pick}}">
+<span style="font-size: 13px; font-weight: 500">{{d.name}}</span>
+<span style="display: block; height: 12px; background: #F6EFD9; border-radius: 4px; overflow: hidden"><span style="display: block; height: 100%; width: {{d.pct}}%; background: {{d.color}}; border-radius: 4px"></span></span>
+<span class="num" style="font-size: 12.5px; text-align: right">{{d.n}}</span>
+</button>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section class="card" style="padding: 0">
+<div style="padding: 18px 20px 12px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px">
+<div><h2 class="h2">Học sinh {{tableTitle}}</h2><p class="sub">{{count}} học sinh hiển thị (mẫu minh họa) · nhấn để mở hồ sơ</p></div>
+</div>
+<div style="overflow-x: auto">
+<table class="tb">
+<thead><tr><th>Học sinh</th><th style="text-align: right">ĐTB HK1</th><th style="text-align: right">ĐTB HK2</th><th style="text-align: right">Δ</th><th>Nhóm</th><th>Môn giảm ≥ 0,3</th><th></th></tr></thead>
+<tbody>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="8">
+<tr>
+<td style="font-weight: 600">{{r.name}}</td>
+<td class="num" style="text-align: right; color: #5A5444">{{r.a}}</td>
+<td class="num" style="text-align: right">{{r.b}}</td>
+<td class="num" style="text-align: right; font-weight: 600; color: {{r.dc}}">{{r.d}}</td>
+<td><span class="chip" style="background: {{r.bg}}; color: {{r.fg}}">{{r.group}}</span></td>
+<td style="color: #3A3528">{{r.drops}}</td>
+<td style="text-align: right"><a href="StudentProfile.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; font-size: 13px">Xem hồ sơ</a></td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</section>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1800}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { group: null, subject: null }; }
+  renderVals() {
+    const f = (v, d) => v == null ? '—' : v.toFixed(d == null ? 2 : d).replace('.', ',');
+    const sgn = (v) => (v > 0 ? '+' : v < 0 ? '−' : '±') + f(Math.abs(v));
+    const SB = [['Toán', 6.98, 7.10], ['Văn', 6.92, 7.00], ['Anh', 7.55, 7.30], ['KHTN', 7.05, 7.20], ['LS&ĐL', 7.40, 7.50], ['GDCD', 8.05, 8.10], ['Tin', 7.70, 7.80], ['CN', 7.50, 7.60]];
+    const h = (v) => Math.round((v - 5) / 4 * 170);
+    const subj = SB.map(([n, a, b]) => ({ name: n, a: f(a, 1), b: f(b, 1), ha: h(a), hb: h(b), tip: n + ': HK1 ' + f(a) + ' → HK2 ' + f(b) + ' (' + sgn(Math.round((b - a) * 100) / 100) + ')' }));
+    const C = [['Tốt', '#1D3FCC', '#FFFFFF'], ['Khá', '#3DDC97', '#FFFFFF'], ['Đạt', '#FFE08A', '#111111'], ['Chưa đạt', '#FF5A36', '#FFFFFF']];
+    const dist = [['HK1', [11, 21, 16, 3]], ['HK2', [13, 21, 15, 2]]].map(([sem, ns]) => ({ sem, parts: ns.map((n, i) => ({ n, pct: (n / 51 * 100).toFixed(2), color: C[i][1], fg: C[i][2], tip: sem + ' · ' + C[i][0] + ': ' + n + ' HS' })) }));
+    const { group, subject } = this.state;
+    const G = [['Tiến bộ', 12, '#3DDC97'], ['Ổn định', 33, '#E8DDBE'], ['Sa sút', 6, '#FF5A36']];
+    const groups = G.map(([n, c, col]) => ({ name: n, n: c, color: col, pct: (c / 51 * 100).toFixed(2), pctLabel: f(c / 51 * 100, 1) + '%', cls: group === n ? 'seg on' : 'seg', pressed: group === n ? 'true' : 'false', pick: () => this.setState({ group: group === n ? null : n, subject: null }) }));
+    const D = [['Tiếng Anh', 14], ['Toán', 9], ['Ngữ văn', 7], ['KHTN', 6], ['LS&ĐL', 4], ['Công nghệ', 3], ['Tin học', 2], ['GDCD', 2]];
+    const drops = D.map(([n, c]) => ({ name: n, n: c, pct: (c / 14 * 100).toFixed(1), color: c >= 9 ? '#FFB020' : '#A89C7C', cls: subject === n ? 'rowb on' : 'rowb', pressed: subject === n ? 'true' : 'false', pick: () => this.setState({ subject: subject === n ? null : n, group: null }) }));
+    const ST = { 'Tiến bộ': { bg: '#DCFAE6', fg: '#067647' }, 'Ổn định': { bg: '#F6EFD9', fg: '#3A3528' }, 'Sa sút': { bg: '#FEE4E2', fg: '#C01F14' } };
+    const P = [
+      ['Nguyễn Minh Anh', 7.74, 7.90, ['Tiếng Anh']],
+      ['Hoàng Đức Mạnh', 7.26, 6.92, ['Toán', 'KHTN']],
+      ['Trịnh Bảo Ngọc', 7.71, 8.12, []],
+      ['Phan Tuấn Kiệt', 6.73, 7.06, ['Ngữ văn']],
+      ['Bùi Khánh Linh', 8.42, 8.64, []],
+      ['Mai Quỳnh Như', 7.83, 7.75, ['Tiếng Anh']],
+      ['Lý Thảo Nguyên', 7.43, 7.48, []],
+      ['Cao Nhật Minh', 7.35, 6.98, ['Tiếng Anh', 'Toán', 'Ngữ văn']],
+      ['Tô Hải Yến', 6.60, 6.95, ['Tiếng Anh']],
+      ['La Gia Bảo', 6.88, 6.50, ['Toán']]
+    ];
+    let rows = P.map(([name, a, b, ds]) => { const d = Math.round((b - a) * 100) / 100; const g = d >= 0.3 ? 'Tiến bộ' : d <= -0.3 ? 'Sa sút' : 'Ổn định'; return { name, a: f(a), b: f(b), d: sgn(d), dc: g === 'Tiến bộ' ? '#067647' : g === 'Sa sút' ? '#C01F14' : '#3A3528', group: g, dl: ds, drops: ds.length ? ds.join(', ') : '—', ...ST[g] }; });
+    if (group) rows = rows.filter((r) => r.group === group);
+    if (subject) rows = rows.filter((r) => r.dl.includes(subject));
+    const filterLabel = group || (subject ? 'giảm ' + subject : '');
+    return { subj, dist, groups, drops, rows, count: rows.length, hasFilter: !!(group || subject), filterLabel, clear: () => this.setState({ group: null, subject: null }), tableTitle: group ? 'nhóm ' + group.toLowerCase() : subject ? 'giảm điểm ' + subject : 'trong lớp' };
+  }
+}
+</script>
+</body>
+</html>

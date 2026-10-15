@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Mười thuật toán dự đoán năng lực học tập lớp 9</title>
+<style>
+  @page { size: A4; margin: 22mm 20mm 22mm 22mm; }
+  html { font-size: 12.5pt; }
+  body { font-family: "Times New Roman", "Noto Serif", serif; color: #111; line-height: 1.5; margin: 0; }
+  h1 { font-size: 22pt; margin: 0 0 6pt; line-height: 1.25; }
+  h2 { font-size: 16pt; margin: 22pt 0 8pt; border-bottom: 1.5pt solid #111; padding-bottom: 3pt; break-after: avoid; }
+  h3 { font-size: 13.5pt; margin: 16pt 0 6pt; break-after: avoid; }
+  h4 { font-size: 12.5pt; margin: 12pt 0 4pt; font-style: italic; break-after: avoid; }
+  p { margin: 0 0 7pt; text-align: justify; }
+  ul, ol { margin: 0 0 8pt 0; padding-left: 20pt; }
+  li { margin-bottom: 3pt; }
+  table { border-collapse: collapse; width: 100%; margin: 6pt 0 10pt; font-size: 10.5pt; break-inside: auto; }
+  th, td { border: 0.6pt solid #444; padding: 3pt 5pt; vertical-align: top; }
+  th { background: #e9e9e9; text-align: left; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  tr { break-inside: avoid; }
+  .cover { height: 240mm; display: flex; flex-direction: column; justify-content: center; text-align: center; break-after: page; }
+  .cover .org { font-size: 12pt; letter-spacing: .04em; margin-bottom: 40pt; }
+  .cover h1 { font-size: 26pt; margin: 12pt 0; }
+  .cover .sub { font-size: 14pt; margin: 6pt 0; }
+  .cover .meta { margin-top: 60pt; font-size: 12pt; }
+  .box { border: 1pt solid #111; padding: 8pt 11pt; margin: 8pt 0 10pt; background: #f7f7f7; break-inside: avoid; }
+  .box.note { background: #fff7e0; }
+  .box.warn { background: #fde9e4; }
+  .box .t { font-weight: bold; margin-bottom: 4pt; }
+  .q { font-weight: bold; font-style: italic; }
+  .small { font-size: 10.5pt; }
+  .muted { color: #444; }
+  .sec { break-before: page; }
+  .grid { display: grid; grid-template-columns: 110pt repeat(3, 1fr); gap: 2pt; font-size: 10pt; margin: 6pt 0 10pt; }
+  .grid div { border: 0.6pt solid #666; padding: 2pt 4pt; text-align: center; }
+  .grid .h { background: #e9e9e9; font-weight: bold; }
+  .grid .r { text-align: left; font-weight: bold; background: #f3f3f3; }
+  .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 6pt; margin: 8pt 0 10pt; font-size: 10.5pt; }
+  .flow .b { border: 1pt solid #111; border-radius: 4pt; padding: 5pt 7pt; flex: 1 1 120pt; background: #fff; }
+  .flow .b b { display: block; margin-bottom: 2pt; }
+  .flow .a { align-self: center; font-size: 16pt; }
+  .kv td:first-child { width: 150pt; font-weight: bold; background: #f3f3f3; }
+  .toc li { margin-bottom: 2pt; }
+  .ref { font-size: 10.5pt; }
+  .ref li { margin-bottom: 2pt; }
+  code { font-family: "Consolas", monospace; font-size: 10.5pt; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="org">TRƯỜNG ĐẠI HỌC THỦ DẦU MỘT · CHUYÊN NGÀNH HỆ THỐNG THÔNG TIN</div>
+  <h1>Mười thuật toán dự đoán năng lực học tập học sinh lớp 9</h1>
+  <div class="sub">Nó là gì · Ưu nhược điểm · Cách hoạt động trên dữ liệu của luận văn · Lập luận lựa chọn</div>
+  <div class="sub muted">Tài liệu kỹ thuật kèm luận văn “Khung học sâu tích hợp cơ chế giải thích dự đoán năng lực học tập học sinh cuối cấp THCS”</div>
+  <div class="meta">
+    Dữ liệu: sổ điểm tổng kết một khóa học sinh Trường THCS Phú An, lớp 6 (2022–2023) → lớp 9 (2025–2026)<br>
+    Số liệu thực nghiệm lấy từ <code>reports/BAO_CAO_KET_QUA.md</code> (15 lần chạy cho mỗi mô hình)<br>
+    Tháng 10 năm 2026
+  </div>
+</div>
+
+<h2>Mục lục</h2>
+<ol class="toc">
+  <li>Bài toán, dữ liệu và cách đánh giá chung (đọc trước để hiểu phần “cách hoạt động trên dữ liệu của mình”)</li>
+  <li>Mười thuật toán, mỗi thuật toán trả lời ba câu hỏi: là gì – ưu nhược điểm – hoạt động thế nào trên dữ liệu của mình
+    <ol>
+      <li>Hồi quy tuyến tính (Ridge) – mốc so sánh</li>
+      <li>XGBoost – mốc so sánh dạng cây</li>
+      <li>MLP – mạng truyền thẳng</li>
+      <li>Bi-LSTM – mạng hồi quy hai chiều</li>
+      <li>TabNet – chú ý tuần tự chọn đặc trưng</li>
+      <li>FT-Transformer – Transformer cho dữ liệu bảng</li>
+      <li>TabPFN – mô hình nền tảng cho dữ liệu bảng</li>
+      <li>TabKANet – nhúng đặc trưng bằng KAN + Transformer</li>
+      <li>Kanformer – chú ý đa đầu + lớp KAN</li>
+      <li>XEdu-KANFormer – khung đề xuất</li>
+    </ol></li>
+  <li>Bảng kết quả tổng hợp và kiểm định thống kê</li>
+  <li>Phương pháp luận: lập luận dẫn đến thuật toán được chọn, tại sao chọn, khắc phục điểm yếu nào, vượt trội ở đâu, và cách trình bày trung thực trước hội đồng</li>
+  <li>Tài liệu tham khảo</li>
+</ol>
+
+<!-- ===================================================================== 1 -->
+<h2 class="sec">1. Bài toán, dữ liệu và cách đánh giá chung</h2>
+
+<h3>1.1. Dữ liệu</h3>
+<p>Bộ dữ liệu là sổ điểm tổng kết của <b>một khóa học sinh</b> Trường THCS Phú An, theo dõi dọc bốn năm: lớp 6 (2022–2023), lớp 7 (2023–2024), lớp 8 (2024–2025), lớp 9 (2025–2026). Có 613 học sinh xuất hiện ít nhất một năm, 449 em có đủ bốn năm. Mỗi năm, mỗi học sinh có điểm trung bình cả năm của 8 môn đánh giá bằng điểm số (Toán, Ngữ văn, Tiếng Anh, Khoa học tự nhiên, Lịch sử và Địa lí, Giáo dục công dân, Công nghệ, Tin học), kết quả rèn luyện, số buổi nghỉ có phép và không phép, và mức kết quả học tập theo Thông tư 22/2021 (Tốt, Khá, Đạt, Chưa đạt). Khóa này không có học sinh ở mức Chưa đạt. Dữ liệu được ẩn danh (mã học sinh băm một chiều; họ tên, số định danh, ngày sinh bị tách khỏi tập huấn luyện).</p>
+
+<h3>1.2. Biểu diễn chung cho mọi thuật toán</h3>
+<p>Mỗi học sinh được biểu diễn thành một <b>lưới 11 hàng × 3 cột</b>: 11 hàng gồm 8 môn + kết quả rèn luyện + nghỉ có phép + nghỉ không phép; 3 cột là lớp 6, 7, 8. Ô thiếu (học sinh chuyển đến muộn) được đánh dấu bằng <b>mặt nạ</b>, không điền giá trị giả. Đầu ra cần dự đoán là <b>8 điểm trung bình cả năm lớp 9</b> (hồi quy đa đầu ra) và <b>mức kết quả học tập lớp 9</b> (phân mức).</p>
+<div class="grid">
+  <div class="h">Hàng \ Cột</div><div class="h">Lớp 6</div><div class="h">Lớp 7</div><div class="h">Lớp 8</div>
+  <div class="r">Toán … Tin học (8 môn)</div><div>điểm</div><div>điểm</div><div>điểm</div>
+  <div class="r">Kết quả rèn luyện</div><div>0–3</div><div>0–3</div><div>0–3</div>
+  <div class="r">Nghỉ có phép / không phép</div><div>log(1+n)</div><div>log(1+n)</div><div>log(1+n)</div>
+  <div class="r">→ Mục tiêu</div><div></div><div></div><div><b>8 điểm lớp 9 + mức lớp 9</b></div>
+</div>
+<p>Để có nhiều mẫu hơn, mô hình được học thêm các <b>cửa sổ</b> “lớp 6 → lớp 7” và “lớp 6–7 → lớp 8” (dự đoán năm kế tiếp, các cột tương lai bị che). Tổng cộng 1.486 cửa sổ huấn luyện (503 + 489 + 494); <b>chỉ 494 cửa sổ có mục tiêu lớp 9 được dùng để đánh giá</b>. Các thuật toán dạng “bảng phẳng” (hồi quy tuyến tính, XGBoost, TabNet, TabPFN) nhận lưới này sau khi trải phẳng thành 33 giá trị + 33 cờ mặt nạ + 1 đặc trưng lớp mục tiêu = 67 cột. Các thuật toán học sâu còn lại nhận trực tiếp các ô lưới dưới dạng <b>token</b>.</p>
+
+<h3>1.3. Cách đánh giá (giống nhau cho cả 10 thuật toán)</h3>
+<ul>
+  <li><b>Chia tập:</b> kiểm định chéo 5 lần theo lớp học (GroupKFold) × 3 hạt giống = 15 lần chạy. Mọi cửa sổ của một học sinh luôn ở cùng một phần, không rò rỉ. Trong mỗi lần: 70% học sinh để huấn luyện, 15% để dừng sớm, 15% để hiệu chỉnh khoảng dự đoán.</li>
+  <li><b>Chỉ số:</b> RMSE và MAE (trung bình 8 môn, và riêng 3 môn thi Toán – Văn – Anh), R², Macro-F1 và Acc của phân mức, PICP (độ phủ thực tế) và MPIW (độ rộng) của khoảng dự đoán 90%.</li>
+  <li><b>Khoảng dự đoán:</b> mọi mô hình đều được bọc <i>split conformal</i> 90% theo từng môn, nên có thể so sánh độ phủ công bằng.</li>
+  <li><b>Kiểm định:</b> Friedman trên 120 khối (15 lần chạy × 8 môn), hậu kiểm Nemenyi, Wilcoxon từng cặp trên sai số của từng học sinh.</li>
+  <li><b>Siêu tham số:</b> mỗi mô hình dùng một cấu hình cố định hợp lý (ghi ở mục “cách hoạt động”), chưa dò tìm; đây là giới hạn chung, không thiên vị mô hình nào.</li>
+</ul>
+<div class="box note"><div class="t">Cách đọc các con số</div>Thang điểm 10. RMSE 0,63 nghĩa là sai số bình phương trung bình tương đương 0,63 điểm; MAE 0,46 nghĩa là trung bình mô hình lệch 0,46 điểm so với điểm thật. Chênh lệch giữa các mô hình học sâu chỉ vài phần trăm điểm, nên <b>phải dựa vào kiểm định thống kê</b> chứ không chỉ nhìn thứ hạng.</div>
+
+<!-- ===================================================================== 2 -->
+<h2 class="sec">2. Mười thuật toán</h2>
+
+<!-- 2.1 -->
+<h3>2.1. Hồi quy tuyến tính có điều chuẩn (Ridge) – mốc so sánh</h3>
+<h4>Nó là gì, dùng để làm gì</h4>
+<p>Hồi quy tuyến tính giả định điểm lớp 9 của một môn là <b>tổng có trọng số</b> của các điểm đầu vào: ŷ = w₀ + w₁x₁ + … + wₙxₙ. Ridge thêm phạt L2 lên trọng số để tránh nhiễu khi các đầu vào tương quan mạnh (điểm các môn thường tương quan 0,6–0,85). Phân mức dùng hồi quy logistic. Trong luận văn nó là <b>mốc dưới</b>: mọi thuật toán phức tạp hơn phải chứng minh mình vượt mốc này một cách có ý nghĩa thống kê.</p>
+<h4>Ưu điểm và nhược điểm</h4>
+<ul>
+  <li><b>Ưu:</b> huấn luyện tức thì (0,05 giây), hoàn toàn minh bạch (mỗi trọng số là mức đóng góp của một ô điểm), ổn định với dữ liệu nhỏ, không có siêu tham số đáng kể.</li>
+  <li><b>Nhược:</b> chỉ mô hình hóa quan hệ tuyến tính; không nắm được tương tác (ví dụ Toán lớp 8 thấp <i>và</i> KHTN giảm); coi lưới môn × năm là một vector phẳng; không có cơ chế xử lý ô khuyết ngoài cờ mặt nạ.</li>
+</ul>
+<h4>Cách hoạt động trên dữ liệu của mình</h4>
+<p>Đầu vào 67 cột đã chuẩn hóa; 8 bộ hồi quy Ridge (α = 1) cho 8 môn, 1 bộ hồi quy logistic cho mức. Kết quả: RMSE 0,760 ± 0,043, MAE 0,566, R² 0,742, Macro-F1 0,762, PICP 0,913, MPIW 2,40. Đây là mô hình <b>kém nhất</b> về sai số (hạng trung bình 9,10/10), và là mô hình duy nhất mà khung đề xuất vượt với p &lt; 0,0001. Điều đáng chú ý: Macro-F1 phân mức (0,762) của nó không hề thấp, vì mức kết quả học tập theo Thông tư 22 gần như là một hàm ngưỡng của điểm, nên mô hình tuyến tính học được.</p>
+
+<!-- 2.2 -->
+<h3>2.2. XGBoost – mốc so sánh dạng cây</h3>
+<h4>Nó là gì, dùng để làm gì</h4>
+<p>XGBoost là <i>gradient boosting</i> trên cây quyết định: xây tuần tự hàng trăm cây nông, cây sau sửa phần dư của các cây trước. Nó là “đối thủ khó vượt” trên dữ liệu bảng thông thường (Grinsztajn và cs. [34]) và là lựa chọn phổ biến trong các nghiên cứu dự đoán kết quả học tập kết hợp SHAP (Huang và cs. [12]). Đề cương chỉ xếp nó vào nhóm tham chiếu, nhưng thực nghiệm vẫn chạy để có mốc so sánh công bằng.</p>
+<h4>Ưu điểm và nhược điểm</h4>
+<ul>
+  <li><b>Ưu:</b> xử lý phi tuyến và tương tác đặc trưng tự nhiên; chịu được ô khuyết; ít nhạy với chuẩn hóa; huấn luyện nhanh (2,5 giây); có SHAP để giải thích hậu nghiệm.</li>
+  <li><b>Nhược:</b> coi dữ liệu là bảng phẳng, không biết “Toán lớp 7” và “Toán lớp 8” là cùng một môn qua thời gian; đầu ra đa môn phải huấn luyện độc lập nên không chia sẻ tri thức giữa các môn; dễ quá khớp với ~1.000 mẫu nếu cây sâu; giải thích chỉ hậu nghiệm.</li>
+</ul>
+<h4>Cách hoạt động trên dữ liệu của mình</h4>
+<p>400 cây, độ sâu 3, tốc độ học 0,05, lấy mẫu 80% hàng và cột; một bộ hồi quy đa đầu ra và một bộ phân loại. Kết quả: RMSE 0,692 ± 0,044, MAE 0,514, R² 0,786, Macro-F1 0,741, PICP 0,916. Nó đứng hạng 8/10, <b>không khác biệt có ý nghĩa</b> với khung đề xuất (Wilcoxon p = 0,32). Độ lệch chuẩn giữa các lần chạy (0,044) cao nhất trong nhóm học sâu – dấu hiệu nhạy với cách chia dữ liệu.</p>
+
+<!-- 2.3 -->
+<h3>2.3. MLP – mạng nơ-ron truyền thẳng</h3>
+<h4>Nó là gì, dùng để làm gì</h4>
+<p>MLP (multilayer perceptron) là mạng nơ-ron cơ bản: vector đầu vào đi qua vài lớp ẩn có hàm kích hoạt phi tuyến (ReLU) rồi ra đầu ra. Nó học được quan hệ phi tuyến bất kỳ nếu đủ dữ liệu, và là mô hình học sâu “đơn giản nhất” mà mọi kiến trúc phức tạp hơn phải vượt qua. Trong tổng quan, Pham và cs. [26] dùng MLP cho học sinh THPT Việt Nam.</p>
+<h4>Ưu điểm và nhược điểm</h4>
+<ul>
+  <li><b>Ưu:</b> rất nhanh (2,5 giây), ít tham số, dễ huấn luyện đa nhiệm (một mạng ra cả 8 điểm và mức), ổn định với dữ liệu nhỏ khi có dừng sớm và dropout.</li>
+  <li><b>Nhược:</b> hộp đen; không có cấu trúc – lưới môn × năm bị trải phẳng, mạng phải tự “khám phá” lại rằng các ô cùng hàng là cùng môn; giải thích chỉ hậu nghiệm.</li>
+</ul>
+<h4>Cách hoạt động trên dữ liệu của mình</h4>
+<p>Đầu vào 67 cột → 2 lớp ẩn 64 nơ-ron ReLU, dropout 0,1 → hai đầu ra: hồi quy 8 môn (mất mát Huber) và phân mức 4 lớp (entropy chéo, trọng số λ = 0,3). AdamW, tốc độ học 2·10⁻³, dừng sớm theo tập 15%. Kết quả: RMSE 0,635 ± 0,034, MAE 0,472, R² 0,820, Macro-F1 0,780, PICP 0,922. <b>Hạng 2/10</b>, chỉ sau TabPFN và không khác TabPFN có ý nghĩa (chênh hạng 0,39 &lt; CD 1,24). Đây là kết quả quan trọng: với ~1.500 cửa sổ, một mạng nhỏ được điều chuẩn tốt đã gần chạm trần độ chính xác của dữ liệu.</p>
+
+<!-- 2.4 -->
+<h3>2.4. Bi-LSTM – mạng hồi quy hai chiều</h3>
+<h4>Nó là gì, dùng để làm gì</h4>
+<p>LSTM là mạng hồi quy có cổng nhớ, đọc một chuỗi token từng bước và giữ trạng thái; Bi-LSTM đọc theo cả hai chiều rồi ghép trạng thái cuối. Nó được dùng rộng rãi để dự đoán kết quả học tập từ dữ liệu theo thời gian (Waheed và cs. [17]; Kalita và cs. [18] đạt 88,23% với Bi-LSTM + SHAP).</p>
+<h4>Ưu điểm và nhược điểm</h4>
+<ul>
+  <li><b>Ưu:</b> mô hình hóa được phụ thuộc theo chuỗi; ít tham số hơn Transformer; nhanh (3,8 giây).</li>
+  <li><b>Nhược:</b> chỉ xử lý chuỗi <b>một chiều</b>, trong khi dữ liệu của mình là lưới <b>hai chiều</b> (môn × năm) – phải chọn một thứ tự duyệt, và thứ tự đó là tùy ý; trạng thái ẩn khó diễn giải; với 3 năm thì “chuỗi thời gian” quá ngắn để LSTM phát huy.</li>
+</ul>
+<h4>Cách hoạt động trên dữ liệu của mình</h4>
+<p>34 token (33 ô lưới + 1 đặc trưng tĩnh), mỗi ô nhúng tuyến tính thành vector 32 chiều, ô khuyết dùng token mặt nạ học được; Bi-LSTM ẩn 32 mỗi chiều; ghép hai trạng thái cuối (64) → hai đầu ra đa nhiệm. Kết quả: RMSE 0,665 ± 0,032, MAE 0,501, R² 0,803, Macro-F1 0,785, PICP 0,924 (độ phủ tốt nhất nhóm). Hạng 4/10; tốt hơn khung đề xuất có ý nghĩa (p = 0,014).</p>
+
+<!-- 2.5 -->
+<h3>2.5. TabNet – chú ý tuần tự chọn đặc trưng</h3>
+<h4>Nó là gì, dùng để làm gì</h4>
+<p>TabNet (Arik &amp; Pfister [33]) mô phỏng cách cây quyết định chọn đặc trưng: qua nhiều bước, một mặt nạ chú ý thưa (sparsemax) chọn một tập đặc trưng để xử lý, rồi cộng dồn kết quả. Mặt nạ này cho biết mô hình “nhìn vào” cột nào, nên TabNet được giới thiệu là mạng học sâu <i>có thể diễn giải</i> cho dữ liệu bảng; Yang và cs. [30] kết hợp nó với siêu đồ thị cho dự đoán học tập.</p>
+<h4>Ưu điểm và nhược điểm</h4>
+<ul>
+  <li><b>Ưu:</b> chọn đặc trưng ngay trong mô hình, có mặt nạ chú ý để giải thích; không cần chuẩn hóa phức tạp.</li>
+  <li><b>Nhược:</b> nhiều siêu tham số nhạy (n_d, n_a, số bước, γ, batch ảo); nổi tiếng <b>bất ổn với dữ liệu nhỏ</b>; huấn luyện chậm nhất trong nhóm (99,7 giây/lần); hồi quy và phân mức phải tách thành hai mô hình riêng nên không đa nhiệm.</li>
+</ul>
+<h4>Cách hoạt động trên dữ liệu của mình</h4>
+<p>n_d = n_a = 16, 3 bước, tốc độ học 2·10⁻², batch ảo 64, dừng sớm kiên nhẫn 40; TabNetRegressor đa đầu ra + TabNetClassifier. Kết quả: RMSE 0,692 ± 0,039, MAE 0,518, R² 0,786, <b>Macro-F1 thấp nhất 0,701</b>, nhưng PICP cao nhất 0,927. Hạng 9/10 về sai số; không khác khung đề xuất có ý nghĩa (p = 0,36). Nhận xét: cơ chế chọn đặc trưng thưa không giúp gì khi tất cả 33 ô điểm đều hữu ích.</p>
+
+<!-- 2.6 -->
+<h3>2.6. FT-Transformer – Transformer cho dữ liệu bảng</h3>
+<h4>Nó là gì, dùng để làm gì</h4>
+<p>FT-Transformer (Gorishniy và cs. [6]) biến <b>mỗi đặc trưng</b> thành một token (Feature Tokenizer: x·w + b), thêm token [CLS], rồi cho qua các khối Transformer để self-attention học tương tác giữa các đặc trưng; [CLS] cuối cùng đi vào đầu dự đoán. Đây là kiến trúc Transformer tiêu chuẩn cho dữ liệu bảng, nền tảng của nhiều mô hình sau này.</p>
+<h4>Ưu điểm và nhược điểm</h4>
+<ul>
+  <li><b>Ưu:</b> self-attention cho phép mọi ô điểm “nhìn” mọi ô khác, học tương tác liên môn một cách tự nhiên; trọng số chú ý là một nguồn giải thích; mở rộng được khi thêm đặc trưng.</li>
+  <li><b>Nhược:</b> tốn tham số hơn MLP, cần nhiều dữ liệu hơn; coi 33 ô lưới như 33 đặc trưng <b>không có cấu trúc</b> (mô hình không biết ô nào cùng môn, ô nào cùng năm); chú ý không đương nhiên là lời giải thích (Jain &amp; Wallace [20]).</li>
+</ul>
+<h4>Cách hoạt động trên dữ liệu của mình</h4>
+<p>34 token nhúng tuyến tính 32 chiều + [CLS]; 2 khối encoder, 4 đầu chú ý, FFN 64, pre-norm, GELU, dropout 0,1; đầu ra đa nhiệm từ [CLS]. Kết quả: RMSE 0,683 ± 0,031, MAE 0,506, R² 0,791, Macro-F1 0,774, PICP 0,922. Hạng 6/10, <b>không khác biệt có ý nghĩa</b> với khung đề xuất (p = 0,13), và kém MLP. Điều này cho thấy với 1.486 cửa sổ, chú ý toàn cục giữa 34 token chưa mang lại lợi thế so với một MLP.</p>
+
+<!-- 2.7 -->
+<h3>2.7. TabPFN – mô hình nền tảng cho dữ liệu bảng</h3>
+<h4>Nó là gì, dùng để làm gì</h4>
+<p>TabPFN (Hollmann và cs., <i>Nature</i> 2025 [7]) là một Transformer <b>đã được huấn luyện trước</b> trên hàng triệu bộ dữ liệu tổng hợp sinh từ mô hình nhân quả có cấu trúc. Khi dùng, nó <b>không huấn luyện lại</b>: toàn bộ tập huấn luyện được đưa vào làm “ngữ cảnh”, và mô hình suy ra dự đoán cho mẫu mới bằng học trong ngữ cảnh (in-context learning), giống cách một LLM đọc ví dụ rồi trả lời. Nó được thiết kế riêng cho bộ dữ liệu nhỏ (dưới vài nghìn mẫu) – đúng quy mô của mình.</p>
+<h4>Ưu điểm và nhược điểm</h4>
+<ul>
+  <li><b>Ưu:</b> độ chính xác rất cao trên dữ liệu nhỏ, gần như không cần chỉnh siêu tham số; xấp xỉ suy luận Bayes nên tự nhiên có độ bất định; không quá khớp theo nghĩa thông thường vì không cập nhật trọng số.</li>
+  <li><b>Nhược:</b> hộp đen hoàn toàn và <b>không sửa được kiến trúc</b> (không thể cắm KAN, trục thời gian, đầu ra đa nhiệm); mỗi môn cần một lần suy luận riêng (8 lần); tệp mô hình nặng (446 MB khi lưu kèm ngữ cảnh); phiên bản mới nhất yêu cầu đăng ký tài khoản (luận văn dùng bản v2 trọng số mở); chi phí suy luận tăng theo kích thước ngữ cảnh; không thể truy ngược “ô điểm nào kéo kết quả xuống” ngoài các phép thử che hậu nghiệm.</li>
+</ul>
+<h4>Cách hoạt động trên dữ liệu của mình</h4>
+<p>Bản TabPFN v2 (gói <code>tabpfn 2.0.9</code>), chạy GPU, cấu hình đầy đủ (8 bộ ước lượng tổ hợp); 67 cột đầu vào; 8 bộ hồi quy (mỗi môn một bộ, cùng ngữ cảnh ~1.000 cửa sổ) + 1 bộ phân loại. Kết quả: <b>RMSE 0,626 ± 0,034 – tốt nhất</b>, MAE 0,463, R² 0,825, Macro-F1 0,772, PICP 0,920, MPIW 2,06 (khoảng hẹp nhất). Hạng trung bình 2,43/10. RMSE 3 môn thi 0,732, cũng tốt nhất. Thời gian 22,5 giây/lần vì phải suy luận 9 lần.</p>
+
+<!-- 2.8 -->
+<h3>2.8. TabKANet – nhúng đặc trưng bằng KAN + Transformer</h3>
+<h4>Nó là gì, dùng để làm gì</h4>
+<p>Mạng Kolmogorov–Arnold (KAN, Liu và cs. [8]) thay trọng số tuyến tính cố định trên cạnh bằng <b>hàm một biến học được</b> (B-spline). TabKANet (Gao và cs. [36]) dùng ý tưởng đó ở bước nhúng: mỗi đặc trưng số x được biến thành vector token qua một hàm spline φ(x) thay vì phép nhân tuyến tính x·w, rồi mới đưa vào Transformer chuẩn. Mục đích: cho phép mỗi môn có một “đường cong” phi tuyến riêng (ví dụ Toán 5→6 quan trọng hơn Toán 9→10), và đường cong này vẽ ra được.</p>
+<h4>Ưu điểm và nhược điểm</h4>
+<ul>
+  <li><b>Ưu:</b> nhúng phi tuyến, diễn giải được bằng cách vẽ φ(x) của từng môn; giữ nguyên ưu điểm của Transformer phía sau.</li>
+  <li><b>Nhược:</b> thêm tham số (mỗi môn 8 hệ số spline × 32 chiều); spline có lưới cố định nên giá trị ngoài khoảng chuẩn hóa chỉ còn phần cơ sở SiLU; vẫn không có cấu trúc môn × năm; chưa có công trình áp dụng cho điểm số phổ thông.</li>
+</ul>
+<h4>Cách hoạt động trên dữ liệu của mình</h4>
+<p>Giống FT-Transformer ở mục 2.6 nhưng token hóa bằng KAN (B-spline bậc 3, 5 đoạn lưới trên khoảng [−3, 3] của giá trị chuẩn hóa). Kết quả: RMSE 0,669 ± 0,019 (<b>độ lệch chuẩn thấp nhất</b> – ổn định nhất giữa các lần chạy), MAE 0,499, R² 0,800, Macro-F1 0,774, PICP 0,919. Hạng 5/10; tốt hơn FT-Transformer (0,683) → token hóa KAN có giúp, nhưng vẫn tốt hơn khung đề xuất có ý nghĩa (p = 0,0003).</p>
+
+<!-- 2.9 -->
+<h3>2.9. Kanformer – chú ý đa đầu + lớp KAN</h3>
+<h4>Nó là gì, dùng để làm gì</h4>
+<p>Kanformer (Alnasyan và cs. [21]) là mô hình giáo dục đầu tiên ghép chú ý đa đầu với các lớp KAN ở phần dự đoán, đạt 99,21% trên OULAD (học trực tuyến). Ý tưởng: dùng attention để tổng hợp tương tác giữa đặc trưng, rồi dùng KAN (thay cho MLP) ở phần đầu ra để các hàm phi tuyến cuối cùng diễn giải được.</p>
+<h4>Ưu điểm và nhược điểm</h4>
+<ul>
+  <li><b>Ưu:</b> kết hợp hai nguồn giải thích (trọng số chú ý + hàm spline đầu ra); nhẹ hơn một Transformer đầy đủ (chỉ một khối chú ý).</li>
+  <li><b>Nhược:</b> được thiết kế cho dữ liệu nhật ký học trực tuyến (hàng chục nghìn mẫu, phân loại nhị phân), chưa kiểm chứng trên điểm số phổ thông; gộp trung bình token (mean pooling) làm mất thông tin ô nào quan trọng; không có trục thời gian.</li>
+</ul>
+<h4>Cách hoạt động trên dữ liệu của mình</h4>
+<p>34 token nhúng tuyến tính 32 chiều → một khối chú ý đa đầu (4 đầu) với kết nối tắt và LayerNorm → lấy trung bình token → lớp KAN 32→32 (tanh) → đầu hồi quy bằng KAN (32→8) và đầu phân mức tuyến tính. Kết quả: RMSE 0,651 ± 0,030, MAE 0,484, R² 0,811, <b>Macro-F1 cao nhất 0,789</b>, Acc 0,797, PICP 0,919. Hạng 3/10. Đây là mô hình KAN tốt nhất trong thực nghiệm, và là bằng chứng rằng lớp KAN ở <b>đầu ra</b> phát huy tốt hơn KAN ở <b>đầu vào</b> với dữ liệu này.</p>
+
+<!-- 2.10 -->
+<h3>2.10. XEdu-KANFormer – khung đề xuất</h3>
+<h4>Nó là gì, dùng để làm gì</h4>
+<p>XEdu-KANFormer (eXplainable Education KAN-Transformer) là khung do luận văn đề xuất, thiết kế để trả lời cùng lúc bốn câu hỏi của giáo viên: (1) điểm lớp 9 dự kiến bao nhiêu, (2) vì sao, (3) cần làm gì, (4) tin cậy đến đâu. Nó ghép bốn thành phần: <b>token hóa KAN</b> (hàm spline riêng cho từng môn, dùng chung qua các năm), <b>Transformer chú ý theo trục</b> trên lưới môn × năm (chú ý theo thời gian với mặt nạ nhân quả, rồi chú ý liên môn trong cùng năm), <b>GR-KAN</b> thay mạng truyền thẳng (kích hoạt hữu tỉ theo nhóm, theo KAT [9]), và <b>đầu ra đa nhiệm</b> (hồi quy 8 môn bằng KAN + phân mức). Bên ngoài mô hình là mô-đun conformal và tầng giải thích năm mức.</p>
+<div class="flow">
+  <div class="b"><b>Lưới 11 × 3</b>điểm chuẩn hóa + mặt nạ</div><div class="a">→</div>
+  <div class="b"><b>Token hóa KAN</b>φ_môn(x) + nhúng môn + nhúng năm; ô khuyết = token mặt nạ</div><div class="a">→</div>
+  <div class="b"><b>Khối chú ý theo trục ×2</b>chú ý thời gian (6→7→8, nhân quả) → chú ý liên môn (11 hàng) → GR-KAN</div><div class="a">→</div>
+  <div class="b"><b>[CLS] đọc lưới</b>chú ý từ [CLS] tới mọi ô (trọng số dùng để giải thích)</div><div class="a">→</div>
+  <div class="b"><b>Đầu ra</b>KAN hồi quy 8 môn · phân mức 4 lớp · conformal 90%</div>
+</div>
+<h4>Ưu điểm và nhược điểm</h4>
+<ul>
+  <li><b>Ưu (theo thiết kế):</b> là mô hình duy nhất trong mười mô hình <b>biết cấu trúc dữ liệu</b> – nó phân biệt “cùng môn khác năm” với “cùng năm khác môn”; mặt nạ nhân quả bảo đảm không nhìn trước tương lai; hàm φ_môn vẽ ra được (diễn giải nội tại); trọng số chú ý [CLS] → ô lưới cho bản đồ “ô nào kéo kết quả”; một mạng ra cả điểm lẫn mức; sẵn sàng cho T = 7 học kỳ khi có sổ điểm học kỳ mà không đổi kiến trúc.</li>
+  <li><b>Nhược (theo thực nghiệm):</b> nhiều thành phần → nhiều tham số hơn cần thiết cho 1.486 cửa sổ; với chỉ 3 mốc thời gian, chú ý theo trục thời gian hầu như không có gì để học; huấn luyện chậm (28 giây/lần, gấp 11 lần MLP); kết quả loại bỏ thành phần cho thấy bỏ bớt bất kỳ thành phần nào cũng <i>không làm xấu đi</i> – dấu hiệu dư dung lượng.</li>
+</ul>
+<h4>Cách hoạt động trên dữ liệu của mình</h4>
+<p>d = 32, 4 đầu chú ý, 2 khối, dropout 0,1; mất mát Huber (8 môn) + 0,3 × entropy chéo (mức); AdamW 2·10⁻³, dừng sớm. Kết quả: RMSE 0,689 ± 0,026, MAE 0,514, R² 0,787, Macro-F1 0,752, PICP 0,921, MPIW 2,24; RMSE 3 môn thi 0,814. <b>Hạng 7/10</b> (hạng trung bình 6,33). So với TabPFN, sai số cao hơn 0,063 điểm; so với MLP cao hơn 0,054 điểm – cả hai khác biệt có ý nghĩa thống kê (p &lt; 0,0001). Không khác biệt có ý nghĩa với FT-Transformer, TabNet và XGBoost; tốt hơn hồi quy tuyến tính.</p>
+<table>
+  <tr><th>Biến thể loại bỏ thành phần</th><th class="n">RMSE</th><th class="n">ΔRMSE so với đầy đủ</th><th>Ý nghĩa</th></tr>
+  <tr><td>Bỏ đa nhiệm (chỉ hồi quy)</td><td class="n">0,666 ± 0,037</td><td class="n">−0,023</td><td>Đầu phân mức đang “kéo” đầu hồi quy; λ = 0,3 chưa tối ưu</td></tr>
+  <tr><td>Bỏ token hóa KAN (nhúng tuyến tính)</td><td class="n">0,673 ± 0,032</td><td class="n">−0,016</td><td>Spline đầu vào chưa có lợi với 8 môn, 3 năm</td></tr>
+  <tr><td>Cấu hình nhỏ (d = 16, 1 khối, dropout 0,2)</td><td class="n">0,680 ± 0,031</td><td class="n">−0,009</td><td>Mô hình đầy đủ hơi thừa dung lượng</td></tr>
+  <tr><td>Bỏ chú ý liên môn</td><td class="n">0,681 ± 0,041</td><td class="n">−0,008</td><td>Chú ý liên môn chưa học được gì hơn [CLS]</td></tr>
+  <tr><td>GR-KAN → MLP</td><td class="n">0,682 ± 0,037</td><td class="n">−0,006</td><td>GR-KAN tương đương MLP ở quy mô này</td></tr>
+  <tr><td><b>Đầy đủ</b></td><td class="n"><b>0,689 ± 0,026</b></td><td class="n">0</td><td>Độ lệch chuẩn thấp nhất trong nhóm XEdu</td></tr>
+</table>
+<p class="small muted">Chú ý: mọi chênh lệch trong bảng này (≤ 0,023) đều nhỏ hơn độ lệch chuẩn giữa các lần chạy (≈ 0,03), nên chúng là <i>dấu hiệu</i>, chưa phải kết luận chắc chắn. Phép thử “bỏ chú ý theo trục thời gian” không thực hiện được đúng nghĩa vì T = 3 năm.</p>
+
+<!-- ===================================================================== 3 -->
+<h2 class="sec">3. Bảng kết quả tổng hợp và kiểm định thống kê</h2>
+<table>
+  <tr><th>#</th><th>Mô hình</th><th class="n">RMSE</th><th class="n">MAE</th><th class="n">R²</th><th class="n">Macro-F1</th><th class="n">PICP</th><th class="n">MPIW</th><th class="n">RMSE 3 môn thi</th><th class="n">Hạng TB</th><th class="n">Giây/lần</th></tr>
+  <tr><td>1</td><td>TabPFN</td><td class="n">0,626 ± 0,034</td><td class="n">0,463</td><td class="n">0,825</td><td class="n">0,772</td><td class="n">0,920</td><td class="n">2,06</td><td class="n">0,732</td><td class="n">2,43</td><td class="n">22,5</td></tr>
+  <tr><td>2</td><td>MLP</td><td class="n">0,635 ± 0,034</td><td class="n">0,472</td><td class="n">0,820</td><td class="n">0,780</td><td class="n">0,922</td><td class="n">2,11</td><td class="n">0,753</td><td class="n">2,83</td><td class="n">2,5</td></tr>
+  <tr><td>3</td><td>Kanformer</td><td class="n">0,651 ± 0,030</td><td class="n">0,484</td><td class="n">0,811</td><td class="n">0,789</td><td class="n">0,919</td><td class="n">2,12</td><td class="n">0,765</td><td class="n">4,18</td><td class="n">11,1</td></tr>
+  <tr><td>4</td><td>Bi-LSTM</td><td class="n">0,665 ± 0,032</td><td class="n">0,501</td><td class="n">0,803</td><td class="n">0,785</td><td class="n">0,924</td><td class="n">2,20</td><td class="n">0,786</td><td class="n">5,18</td><td class="n">3,8</td></tr>
+  <tr><td>5</td><td>TabKANet</td><td class="n">0,669 ± 0,019</td><td class="n">0,499</td><td class="n">0,800</td><td class="n">0,774</td><td class="n">0,919</td><td class="n">2,17</td><td class="n">0,804</td><td class="n">5,21</td><td class="n">9,0</td></tr>
+  <tr><td>6</td><td>FT-Transformer</td><td class="n">0,683 ± 0,031</td><td class="n">0,506</td><td class="n">0,791</td><td class="n">0,774</td><td class="n">0,922</td><td class="n">2,23</td><td class="n">0,820</td><td class="n">6,17</td><td class="n">6,6</td></tr>
+  <tr><td>7</td><td><b>XEdu-KANFormer (đề xuất)</b></td><td class="n"><b>0,689 ± 0,026</b></td><td class="n">0,514</td><td class="n">0,787</td><td class="n">0,752</td><td class="n">0,921</td><td class="n">2,24</td><td class="n">0,814</td><td class="n">6,33</td><td class="n">28,0</td></tr>
+  <tr><td>8</td><td>XGBoost</td><td class="n">0,692 ± 0,044</td><td class="n">0,514</td><td class="n">0,786</td><td class="n">0,741</td><td class="n">0,916</td><td class="n">2,25</td><td class="n">0,819</td><td class="n">6,95</td><td class="n">2,5</td></tr>
+  <tr><td>9</td><td>TabNet</td><td class="n">0,692 ± 0,039</td><td class="n">0,518</td><td class="n">0,786</td><td class="n">0,701</td><td class="n">0,927</td><td class="n">2,29</td><td class="n">0,830</td><td class="n">6,62</td><td class="n">99,7</td></tr>
+  <tr><td>10</td><td>Hồi quy tuyến tính</td><td class="n">0,760 ± 0,043</td><td class="n">0,566</td><td class="n">0,742</td><td class="n">0,762</td><td class="n">0,913</td><td class="n">2,40</td><td class="n">0,908</td><td class="n">9,10</td><td class="n">0,05</td></tr>
+</table>
+<p><b>Friedman</b> trên 120 khối: χ² = 470,29, p ≈ 10⁻⁹⁵ → các mô hình khác nhau có ý nghĩa. <b>Khoảng cách tới hạn Nemenyi</b> (α = 0,05) = 1,24: hai mô hình chỉ được coi là khác nhau khi hạng trung bình cách nhau trên 1,24. Suy ra ba tầng: tầng đầu {TabPFN, MLP} (2,43 – 2,83); tầng giữa {Kanformer, Bi-LSTM, TabKANet} (4,18 – 5,21); tầng ba {FT-Transformer, XEdu-KANFormer, TabNet, XGBoost} (6,17 – 6,95); hồi quy tuyến tính đứng riêng (9,10). <b>Wilcoxon</b> theo học sinh xác nhận: khung đề xuất kém TabPFN, MLP, Kanformer, TabKANet, Bi-LSTM (p ≤ 0,014), tương đương FT-Transformer, TabNet, XGBoost (p ≥ 0,13), và hơn hồi quy tuyến tính (p &lt; 0,0001).</p>
+<p><b>Độ phủ khoảng dự đoán:</b> cả 10 mô hình đạt PICP 0,913 – 0,927 với mục tiêu 0,90, tức là split conformal giữ đúng bảo đảm thống kê bất kể mô hình nền; độ rộng khoảng hẹp dần theo độ chính xác (TabPFN 2,06 → hồi quy tuyến tính 2,40).</p>
+
+<!-- ===================================================================== 4 -->
+<h2 class="sec">4. Phương pháp luận: lập luận dẫn đến thuật toán được chọn</h2>
+<p>Phần này viết theo cách trình bày trước hội đồng: đi từ yêu cầu của bài toán, qua từng họ thuật toán, chỉ ra mỗi họ giải quyết được gì và còn thiếu gì, để người nghe tự thấy vì sao khung đề xuất có dạng như vậy – rồi đối chiếu trung thực với số liệu.</p>
+
+<h3>4.1. Bắt đầu từ yêu cầu, không bắt đầu từ thuật toán</h3>
+<p>Một công cụ hỗ trợ giáo viên lớp 9 phải trả lời bốn câu hỏi (mục 1.2 của đề cương): <b>Q1</b> dự kiến kết quả bao nhiêu; <b>Q2</b> vì sao; <b>Q3</b> cần làm gì (môn nào, tăng bao nhiêu); <b>Q4</b> tin cậy đến mức nào. Từ đó rút ra năm yêu cầu kỹ thuật:</p>
+<table class="kv">
+  <tr><td>R1 – Chính xác trên dữ liệu nhỏ</td><td>Một khóa, ~500 học sinh, 1.486 cửa sổ; mô hình phải không quá khớp.</td></tr>
+  <tr><td>R2 – Tôn trọng cấu trúc</td><td>Dữ liệu là lưới môn × thời gian; “Toán lớp 7” và “Toán lớp 8” là cùng một chuỗi; các môn trong cùng năm liên hệ nhau.</td></tr>
+  <tr><td>R3 – Diễn giải nội tại</td><td>Rudin [42]: quyết định quan trọng nên dùng mô hình tự giải thích được, không chỉ giải thích hậu nghiệm.</td></tr>
+  <tr><td>R4 – Độ bất định có bảo đảm</td><td>Một con số không đủ để ra quyết định sư phạm; cần khoảng dự đoán có độ phủ kiểm chứng được.</td></tr>
+  <tr><td>R5 – Đa nhiệm</td><td>Cần cả điểm từng môn (để tư vấn) lẫn mức kết quả học tập (để phân luồng), tốt nhất từ một mô hình.</td></tr>
+</table>
+
+<h3>4.2. Đi qua từng họ thuật toán: mỗi bước giải quyết gì, còn thiếu gì</h3>
+<ol>
+  <li><b>Hồi quy tuyến tính</b> đáp ứng R3 (hoàn toàn minh bạch) nhưng hỏng R1: sai số lớn nhất (RMSE 0,760), vì quan hệ giữa điểm các năm không tuyến tính và có tương tác. → Cần mô hình phi tuyến.</li>
+  <li><b>XGBoost</b> đưa vào phi tuyến và tương tác, nhưng coi lưới là bảng phẳng (phạm R2), giải thích chỉ hậu nghiệm bằng SHAP (phạm R3), và thực tế không hơn các mạng học sâu (0,692, hạng 8). Nó xác nhận nhận định của Grinsztajn [34] chỉ đúng khi dữ liệu không có cấu trúc – còn ở đây cấu trúc là chìa khóa. → Cần mô hình học biểu diễn.</li>
+  <li><b>MLP</b> chứng minh học sâu đơn giản đã rất mạnh trên dữ liệu này (0,635, hạng 2). Nhưng nó là hộp đen trải phẳng: không trả lời được Q2 ngoài các phép thử hậu nghiệm, không biết R2. → Cần đưa cấu trúc và tính diễn giải vào trong kiến trúc mà <i>không đánh mất</i> độ chính xác của MLP.</li>
+  <li><b>Bi-LSTM</b> là nỗ lực đầu tiên đưa “thời gian” vào, nhưng ép lưới hai chiều thành chuỗi một chiều; kết quả tốt (0,665) nhưng trạng thái ẩn không diễn giải được. → Chuỗi là chưa đủ; cần cơ chế xử lý đồng thời hai chiều.</li>
+  <li><b>TabNet</b> hứa hẹn diễn giải nhờ mặt nạ chọn đặc trưng, nhưng bất ổn và chậm trên dữ liệu nhỏ (0,692, Macro-F1 thấp nhất). → Diễn giải bằng “chọn cột” không phù hợp khi mọi cột đều có nghĩa.</li>
+  <li><b>FT-Transformer</b> cho mọi ô điểm nhìn mọi ô khác bằng self-attention – đúng hướng cho tương tác liên môn – nhưng vẫn không có khái niệm “cùng môn” hay “cùng năm” (0,683). → Phải tổ chức attention theo trục.</li>
+  <li><b>TabPFN</b> đạt độ chính xác cao nhất (0,626) mà không cần huấn luyện; nó đặt ra <b>trần độ chính xác thực tế</b> của dữ liệu. Nhưng nó là hộp đen không sửa được, không đa nhiệm, không trục thời gian, 446 MB, cần suy luận riêng từng môn. Nó trả lời Q1 và một phần Q4, nhưng không trả lời Q2–Q3 từ bên trong mô hình. → Dùng làm thước đo, không dùng làm khung.</li>
+  <li><b>TabKANet</b> và <b>Kanformer</b> mang KAN vào: hàm spline học được, vẽ ra được. TabKANet đặt KAN ở đầu vào (0,669), Kanformer đặt KAN ở đầu ra (0,651, Macro-F1 cao nhất). Cả hai cho thấy KAN không làm giảm độ chính xác và thêm được nguồn giải thích nội tại (R3), nhưng cả hai vẫn chưa có R2. → Ghép KAN với attention theo trục.</li>
+</ol>
+
+<h3>4.3. Vì sao chọn XEdu-KANFormer – nó khắc phục điểm yếu nào của ai</h3>
+<table>
+  <tr><th>Điểm yếu của mô hình trước</th><th>XEdu-KANFormer khắc phục bằng</th><th>Yêu cầu</th></tr>
+  <tr><td>Tuyến tính / cây / MLP / FT-Transformer trải phẳng lưới, không biết môn và năm</td><td>Nhúng môn + nhúng năm, chú ý <i>theo trục</i>: trục thời gian (cùng môn, mặt nạ nhân quả) rồi trục môn (cùng năm)</td><td>R2</td></tr>
+  <tr><td>Bi-LSTM ép lưới thành chuỗi một chiều</td><td>Xử lý hai chiều tách biệt, không cần chọn thứ tự duyệt</td><td>R2</td></tr>
+  <tr><td>MLP, FT-Transformer, TabPFN, XGBoost chỉ giải thích hậu nghiệm</td><td>Token hóa KAN (hàm φ_môn vẽ được), GR-KAN, trọng số chú ý [CLS] → ô lưới; kết hợp với occlusion đã kiểm chứng</td><td>R3</td></tr>
+  <tr><td>Dự đoán chỉ là một con số</td><td>Mô-đun split conformal theo từng môn, độ phủ đạt 0,921 (mục tiêu 0,90)</td><td>R4</td></tr>
+  <tr><td>TabNet, TabPFN, XGBoost phải tách hồi quy và phân mức thành hai mô hình</td><td>Một mạng, hai đầu ra: mất mát Huber + λ·CE</td><td>R5</td></tr>
+  <tr><td>TabPFN không sửa được, không mở rộng được</td><td>Kiến trúc mở: thêm học kỳ (T = 7), thêm môn, thêm đặc trưng tĩnh mà không đổi thiết kế</td><td>Triển khai</td></tr>
+</table>
+<p>Nói cách khác, XEdu-KANFormer không được chọn vì “Transformer mạnh hơn”, mà vì nó là <b>kiến trúc duy nhất trong mười mô hình thỏa đồng thời R2–R5</b>. Đó là lập luận thiết kế, và nó đứng vững bất kể kết quả thực nghiệm. Câu hỏi còn lại là R1: nó có trả giá bao nhiêu độ chính xác cho các tính chất đó?</p>
+
+<h3>4.4. Thực nghiệm nói gì – và nói thế nào cho trung thực</h3>
+<div class="box warn"><div class="t">Sự thật cần nói thẳng</div>Trên bộ dữ liệu này, khung đề xuất <b>không đạt</b> mục tiêu MT5 của đề cương (RMSE thấp hơn mô hình cơ sở tốt nhất với p &lt; 0,05). Nó xếp hạng 7/10, kém TabPFN 0,063 điểm và kém MLP 0,054 điểm RMSE, khác biệt có ý nghĩa thống kê. Nó ngang hàng với FT-Transformer, TabNet, XGBoost và chỉ hơn hồi quy tuyến tính.</div>
+<p>Cách lập luận đúng là không che giấu điều đó, mà đặt nó vào bối cảnh và chỉ ra nguyên nhân có bằng chứng:</p>
+<ol>
+  <li><b>Quy mô chênh lệch.</b> 0,06 điểm trên thang 10, tương đương 6% của một bậc điểm; trong khi độ rộng khoảng dự đoán 90% là 2,2 điểm. Với mục đích tư vấn (môn nào, tăng bao nhiêu), mức chênh này không đổi quyết định sư phạm. Cả 10 mô hình đạt R² từ 0,74 đến 0,83 – tức là độ chính xác bị <i>dữ liệu</i> giới hạn nhiều hơn là bị <i>kiến trúc</i> giới hạn.</li>
+  <li><b>Nguyên nhân thứ nhất: dữ liệu chưa đúng dạng mà kiến trúc được thiết kế cho.</b> Đề cương giả định 7 học kỳ; thực tế chỉ có 3 năm. Chú ý theo trục thời gian trên 3 điểm hầu như không có gì để học, và phép loại bỏ nó không thể kiểm chứng. Mọi ưu thế “cấu trúc” của XEdu đều nằm ở trục này.</li>
+  <li><b>Nguyên nhân thứ hai: dư dung lượng.</b> Bỏ bất kỳ thành phần nào (đa nhiệm, token KAN, chú ý liên môn, GR-KAN) hoặc thu nhỏ mô hình đều làm RMSE <i>giảm nhẹ</i> (0,666–0,682). Mô hình đang có nhiều tham số hơn 1.486 cửa sổ cho phép. Đây là chẩn đoán có số liệu, không phải biện hộ.</li>
+  <li><b>Nguyên nhân thứ ba: λ = 0,3 cho đa nhiệm chưa phù hợp.</b> Biến thể bỏ đa nhiệm cho RMSE tốt nhất trong họ XEdu (0,666, ngang Bi-LSTM). Đầu phân mức đang kéo đầu hồi quy; cần chọn λ trên tập kiểm định như đề cương đã dự kiến.</li>
+  <li><b>Điều mô hình đề xuất vẫn giữ được.</b> Độ phủ conformal 0,921 (đạt mục tiêu); độ lệch chuẩn giữa các lần chạy 0,026 – thấp nhất trong nhóm Transformer; là mô hình duy nhất xuất ra bản đồ chú ý trên lưới môn × năm và hàm φ_môn; trả lời đủ Q1–Q4 trong một khung thống nhất.</li>
+</ol>
+
+<h3>4.5. Kết luận lựa chọn và cách phát biểu trước hội đồng</h3>
+<div class="box"><div class="t">Phát biểu đề nghị</div>
+<p>“Luận văn đề xuất XEdu-KANFormer như một <i>khung</i> tích hợp dự đoán – giải thích – khuyến nghị – độ bất định, không phải như một mô hình đơn lẻ thi đua về sai số. Trên bộ dữ liệu một khóa, ba năm học, khung đạt RMSE 0,689, ngang các Transformer dạng bảng và XGBoost, kém mô hình nền tảng TabPFN và MLP khoảng 0,06 điểm; độ phủ khoảng dự đoán 0,92 đạt mục tiêu. Phân tích loại bỏ thành phần cho thấy nguyên nhân là dư dung lượng và thiếu trục thời gian đủ dài, đúng với điều kiện dữ liệu khác với giả định ban đầu của đề cương. Vì vậy, hệ thống triển khai dùng <b>hai mô hình</b>: TabPFN làm bộ dự đoán tham chiếu về độ chính xác, XEdu-KANFormer làm bộ dự đoán có tầng giải thích; cả hai cùng được bọc conformal và cùng đi qua luật Thông tư 22 và LLM cục bộ để sinh khuyến nghị. Khi nhà trường cung cấp sổ điểm theo học kỳ (T = 7), kiến trúc XEdu được dùng lại nguyên vẹn và đó là bước kiểm chứng tiếp theo.”</p></div>
+<p>Những câu hỏi hội đồng có thể đặt và cách trả lời ngắn:</p>
+<ul>
+  <li><span class="q">“Sao không dùng TabPFN cho xong?”</span> – TabPFN không sửa được, không đa nhiệm, không cho trục thời gian, không có hàm diễn giải nội tại, nặng 446 MB và phải suy luận 8 lần cho 8 môn. Nó là thước đo tốt nhất, không phải khung tốt nhất; hệ thống vẫn dùng nó song song.</li>
+  <li><span class="q">“Mô hình đề xuất thua MLP thì đóng góp là gì?”</span> – Đóng góp nằm ở (i) cách biểu diễn lưới môn × năm có mặt nạ, (ii) quy trình đánh giá nghiêm ngặt 15 lần chạy với kiểm định thống kê và conformal cho cả 10 mô hình, (iii) tầng giải thích – khuyến nghị – ngôn ngữ tự nhiên chạy cục bộ đã triển khai thành web app, và (iv) bằng chứng rằng với dữ liệu phổ thông cỡ nhỏ, mô hình đơn giản được điều chuẩn tốt là đủ – một kết luận hữu ích cho các trường khác.</li>
+  <li><span class="q">“Kết quả có tổng quát không?”</span> – Một trường, một khóa; tất cả kết luận là cho bối cảnh này. Việc chia theo lớp và lặp 3 hạt giống hạn chế rò rỉ và may rủi, nhưng không thay được kiểm chứng ở trường khác.</li>
+  <li><span class="q">“Macro-F1 chỉ 0,75–0,79, thấp hay cao?”</span> – Mức kết quả học tập là hàm ngưỡng của điểm; sai số 0,5 điểm quanh ngưỡng 6,5 hoặc 8,0 là đủ đổi mức, nên Macro-F1 bị giới hạn bởi cùng sai số hồi quy. Khóa này không có mức Chưa đạt nên thực chất là bài toán 3 lớp.</li>
+</ul>
+
+<!-- ===================================================================== 5 -->
+<h2 class="sec">5. Tài liệu tham khảo (đánh số theo đề cương)</h2>
+<ol class="ref">
+  <li value="6">Y. Gorishniy, I. Rubachev, V. Khrulkov, A. Babenko, “Revisiting deep learning models for tabular data,” NeurIPS 34, 2021.</li>
+  <li value="7">N. Hollmann et al., “Accurate predictions on small data with a tabular foundation model,” <i>Nature</i> 637, 2025.</li>
+  <li value="8">Z. Liu et al., “KAN: Kolmogorov–Arnold networks,” ICLR 2025.</li>
+  <li value="9">X. Yang, X. Wang, “Kolmogorov–Arnold Transformer,” ICLR 2025.</li>
+  <li value="12">Y. Huang et al., “Applying machine learning and SHAP method to identify key influences on middle-school students’ mathematics literacy performance,” <i>Journal of Intelligence</i> 12(10), 2024.</li>
+  <li value="17">H. Waheed et al., “Early prediction of learners at risk in self-paced education: A neural network approach,” <i>Expert Systems with Applications</i> 213, 2023.</li>
+  <li value="18">E. Kalita et al., “Predicting student academic performance using Bi-LSTM,” <i>Frontiers in Education</i> 10, 2025.</li>
+  <li value="20">S. Jain, B. C. Wallace, “Attention is not explanation,” NAACL-HLT 2019.</li>
+  <li value="21">B. Alnasyan et al., “Kanformer: An attention-enhanced deep learning model for predicting student performance in virtual learning environments,” <i>Social Network Analysis and Mining</i> 15, 2025.</li>
+  <li value="26">T. T. H. Pham et al., “A data-centric MLOps framework for academic prediction with socioeconomic context in Vietnamese high schools,” <i>SN Computer Science</i> 7, 2026.</li>
+  <li value="30">Y. Yang et al., “Student academic performance prediction via hypergraph and TabNet,” <i>Journal of Big Data</i> 12, 2025.</li>
+  <li value="33">S. Ö. Arik, T. Pfister, “TabNet: Attentive interpretable tabular learning,” AAAI 2021.</li>
+  <li value="34">L. Grinsztajn, E. Oyallon, G. Varoquaux, “Why do tree-based models still outperform deep learning on typical tabular data?,” NeurIPS 2022.</li>
+  <li value="36">W. Gao et al., “TabKANet: Tabular data modeling with Kolmogorov–Arnold Network and Transformer,” arXiv:2409.08806, 2024.</li>
+  <li value="37">J. Ho et al., “Axial attention in multidimensional transformers,” arXiv:1912.12180, 2019.</li>
+  <li value="42">C. Rudin, “Stop explaining black box machine learning models for high stakes decisions and use interpretable models instead,” <i>Nature Machine Intelligence</i> 1, 2019.</li>
+  <li value="44">A. N. Angelopoulos, S. Bates, “Conformal prediction: A gentle introduction,” <i>Foundations and Trends in Machine Learning</i> 16(4), 2023.</li>
+  <li value="47">J. Demšar, “Statistical comparisons of classifiers over multiple data sets,” <i>JMLR</i> 7, 2006.</li>
+</ol>
+<p class="small muted">Số liệu trong tài liệu này được sinh từ <code>reports/metrics_runs.csv</code>, <code>summary.csv</code>, <code>wilcoxon.csv</code>, <code>nemenyi_p.csv</code>, <code>stats.json</code> của dự án; mã nguồn mô hình ở <code>src/e3m/models.py</code> và quy trình đánh giá ở <code>experiments/run_benchmark.py</code>.</p>
+
+</body>
+</html>

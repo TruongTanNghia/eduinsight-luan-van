@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>EduInsight AI — Quản lý dữ liệu</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#FFF8E6;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#111111}
+a{color:#2B59FF}a:hover{color:#2537C9}
+.ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nav{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;color:#CBC7F7;text-decoration:none;font-size:14px;min-height:44px;box-sizing:border-box}
+.nav:hover{background:rgba(255,255,255,.12);color:#FFFFFF}
+.nav.on{background:linear-gradient(90deg,rgba(255,255,255,.24),rgba(255,255,255,.08));box-shadow:0 8px 20px -8px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.18);color:#FFFFFF;font-weight:600}
+.card{background:rgba(255,255,255,.92);border:1px solid #ECE8FB;border-radius:16px;padding:20px;box-sizing:border-box;min-width:0;box-shadow:0 1px 2px rgba(76,29,149,.05),0 12px 32px -16px rgba(109,40,217,.28)}
+h1{background:linear-gradient(90deg,#4C1D95 0%,#C026D3 55%,#F97316 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+polyline{filter:drop-shadow(0 4px 5px rgba(109,40,217,.28))}
+.h2{margin:0;font-size:15px;font-weight:600;color:#111111}
+.sub{margin:4px 0 0;font-size:12.5px;color:#5A5444;line-height:1.5}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.tb{width:100%;border-collapse:collapse;font-size:13px}
+.tb th{text-align:left;font-size:12px;font-weight:600;color:#5A5444;padding:9px 12px;border-bottom:1px solid #EADFC3;white-space:nowrap;background:#FFFBEF}
+.tb td{padding:9px 12px;border-bottom:1px solid #F6EFD9;vertical-align:middle;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border-radius:8px;font:inherit;font-size:13.5px;font-weight:600;border:0;cursor:pointer;box-sizing:border-box}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.step{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:500;color:#5A5444;flex:1 1 160px;min-width:0}
+.dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;flex:none}
+.ok{color:#067647}.warn{color:#B54708}.bad{color:#C01F14}
+.ck{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;line-height:1.5;cursor:pointer}
+.ck input{width:18px;height:18px;accent-color:#2B59FF;margin:2px 0 0;flex:none}
+
+body{font-family:'Bricolage Grotesque',system-ui,sans-serif !important;color:#111111;background:#FFF4D6}
+a{color:#1D3FCC}a:hover{color:#111111}
+.num,.mono,.ax{font-family:'JetBrains Mono',ui-monospace,monospace !important}
+.card{background:#FFFFFF !important;border:2.5px solid #111111 !important;border-radius:18px !important;box-shadow:5px 5px 0 #111111 !important}
+h1{background:none !important;-webkit-background-clip:border-box !important;background-clip:border-box !important;color:#111111 !important;font-weight:800 !important;letter-spacing:-.03em !important}
+.h2{font-weight:800 !important;font-size:18px;letter-spacing:-.01em;color:#111111}
+.sub{color:#4A4436}
+.chip{border:2px solid #111111}
+.sel,.fsel{border:2.5px solid #111111 !important;border-radius:12px !important;font-weight:600}
+.tb th{background:#FFE9A8 !important;color:#111111 !important;border-bottom:2.5px solid #111111 !important}
+.tb td{border-bottom:1.5px solid #EADFC3 !important}
+polyline{filter:none !important}
+.tog{border:2.5px solid #111111 !important;font-weight:700;color:#111111}
+.tog.on{background:#2B59FF !important;color:#FFFFFF !important;box-shadow:3px 3px 0 #111111 !important}
+.seg,.opt{border:2.5px solid #111111 !important;box-shadow:none}
+.seg.on,.opt.on{background:#FFD23F !important;border-color:#111111 !important;box-shadow:4px 4px 0 #111111 !important}
+.pg{border:2.5px solid #111111 !important;font-weight:700}
+.pg.on{background:#111111 !important;color:#FFD23F !important}
+.segc{background:#FFFFFF !important;border:2.5px solid #111111}
+.segc button.on{background:#2B59FF !important;color:#FFFFFF !important;box-shadow:none !important}
+.btn{border:2.5px solid #111111 !important;border-radius:12px !important;font-weight:800 !important;box-shadow:3px 3px 0 #111111 !important}
+.stat,.blk{border:2.5px solid #111111 !important;border-radius:14px !important}
+.rowb.on{background:#FFD23F !important}
+.clr{border:2.5px solid #111111 !important;font-weight:700}
+.k{color:#111111 !important;font-weight:600 !important}
+.pillnav{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:2.5px solid #111111;border-radius:999px;background:#FFFFFF;font-weight:700;font-size:14px;text-decoration:none;color:#111111;box-sizing:border-box}
+.pillnav:hover{color:#111111;box-shadow:3px 3px 0 #111111}
+.pillnav.on{background:#2B59FF;color:#FFFFFF;box-shadow:3px 3px 0 #111111}
+</style>
+</helmet>
+<div style="min-height: 100vh; background-color: #FFF4D6; background-image: radial-gradient(#E8D9AE 1.2px, transparent 1.2px); background-size: 22px 22px; display: flex; flex-direction: column">
+<header style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; padding: 22px 32px 0; max-width: 1400px; width: 100%; margin: 0 auto; box-sizing: border-box">
+<div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap">
+<a href="Main.dc.html" style="display: inline-block; background: #111111; color: #FFD23F; font-weight: 800; font-size: 22px; padding: 7px 14px; border-radius: 12px; transform: rotate(-2.5deg); letter-spacing: -0.02em; text-decoration: none">EduInsight<span style="color: #FF5A36">!</span></a>
+<nav aria-label="Điều hướng chính" style="display: flex; gap: 8px; flex-wrap: wrap"><a class="pillnav" href="Main.dc.html">Tổng quan</a><a class="pillnav" href="Students.dc.html">Học sinh</a><a class="pillnav" href="ClassAnalysis.dc.html">Lớp học</a><a class="pillnav" href="Prediction.dc.html">Dự đoán</a><a class="pillnav" href="ModelEval.dc.html">Mô hình</a><a class="pillnav" href="Reports.dc.html">Báo cáo</a><a class="pillnav on" href="DataManagement.dc.html" aria-current="page">Dữ liệu</a></nav>
+</div>
+<span aria-label="Tài khoản giáo viên" style="width: 46px; height: 46px; border-radius: 50%; border: 2.5px solid #111111; background: #FF8FC7; display: flex; align-items: center; justify-content: center; font-weight: 800">GV</span>
+</header>
+<main style="width: 100%; max-width: 1400px; margin: 0 auto; min-width: 0; padding: 28px 32px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+
+<header style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+<h1 style="margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.01em">Quản lý dữ liệu</h1>
+<span class="chip" style="background: #FFD23F; color: #111111">Dữ liệu minh họa</span>
+</div>
+<p style="margin: 0; font-size: 13.5px; color: #5A5444">Phiên bản đang dùng: <strong class="num">ds-2026.09.1</strong> · 13.184 bản ghi điểm · 412 học sinh · nhập ngày 08/10/2026</p>
+</header>
+
+<section class="card" style="display: flex; flex-direction: column; gap: 20px">
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 12px">
+<sc-for list="{{steps}}" as="s"><li class="step" aria-current="{{s.cur}}"><span class="dot" style="background: {{s.bg}}; color: {{s.fg}}">{{s.mark}}</span><span style="color: {{s.tc}}">{{s.name}}</span></li></sc-for>
+</ol>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 16px">
+<div style="border: 1.5px dashed #FF8FC7; border-radius: 12px; background: #F6F5FF; padding: 28px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
+<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" style="width: 30px; height: 30px; color: #2B59FF"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>
+<strong style="font-size: 15px">Kéo thả file CSV hoặc Excel vào đây</strong>
+<span style="font-size: 12.5px; color: #5A5444">.csv, .xlsx · tối đa 20 MB · công thức trong ô được đọc như văn bản, không thực thi</span>
+<label class="btn" style="position: relative; background: #FFFFFF; border: 1px solid #D9CBA3; color: #111111">Chọn file<input type="file" accept=".csv,.xlsx" style="position: absolute; width: 1px; height: 1px; opacity: 0"></label>
+<a href="#" style="font-size: 12.5px; font-weight: 600">Tải file mẫu đúng cấu trúc</a>
+</div>
+<div style="border: 1px solid #EADFC3; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; gap: 12px; align-items: center">
+<div style="width: 40px; height: 40px; border-radius: 8px; background: #DCFAE6; color: #067647; display: flex; align-items: center; justify-content: center; flex: none"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h8"/><path d="M12 11v8"/></svg></div>
+<div style="display: flex; flex-direction: column; min-width: 0"><strong class="num" style="font-size: 13.5px; overflow-wrap: anywhere">diem_HK2_2025-2026.xlsx</strong><span style="font-size: 12px; color: #5A5444">1,2 MB · sheet “Diem” · 3.296 dòng</span></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<div style="padding: 12px; border-radius: 8px; background: #DCFAE6"><span style="font-size: 11.5px; color: #067647; font-weight: 600">Hợp lệ</span><br><strong class="num" style="font-size: 20px; color: #067647">3.278</strong></div>
+<div style="padding: 12px; border-radius: 8px; background: #FEE4E2"><span style="font-size: 11.5px; color: #C01F14; font-weight: 600">Không hợp lệ</span><br><strong class="num" style="font-size: 20px; color: #C01F14">18</strong></div>
+<div style="padding: 12px; border-radius: 8px; background: #FFE9A8"><span style="font-size: 11.5px; color: #B54708; font-weight: 600">Cảnh báo</span><br><strong class="num" style="font-size: 20px; color: #B54708">3</strong></div>
+</div>
+<span style="font-size: 12px; color: #5A5444">Dòng không hợp lệ sẽ bị bỏ qua và được liệt kê trong báo cáo chất lượng dữ liệu.</span>
+</div>
+</div>
+</section>
+
+<section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 16px">
+<div class="card" style="padding: 0">
+<div style="padding: 18px 20px 10px"><h2 class="h2">Kiểm tra cấu trúc</h2><p class="sub">So khớp cột với schema đã khai báo</p></div>
+<div style="overflow-x: auto">
+<table class="tb">
+<thead><tr><th>Cột</th><th>Kiểu mong đợi</th><th>Bắt buộc</th><th>Kết quả</th></tr></thead>
+<tbody>
+<sc-for list="{{schema}}" as="c"><tr><td class="num">{{c.col}}</td><td style="color: #3A3528">{{c.type}}</td><td>{{c.req}}</td><td><span class="{{c.cls}}" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 12.5px"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" style="width: 16px; height: 16px"><circle cx="12" cy="12" r="9"/><path d="{{c.icon}}"/></svg>{{c.res}}</span></td></tr></sc-for>
+</tbody>
+</table>
+</div>
+</div>
+<div class="card" style="padding: 0">
+<div style="padding: 18px 20px 10px"><h2 class="h2">Lỗi và cảnh báo</h2><p class="sub">18 dòng không hợp lệ, 3 cảnh báo</p></div>
+<ul style="list-style: none; margin: 0; padding: 0 20px 20px; display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{issues}}" as="i"><li style="display: flex; gap: 12px; align-items: flex-start; padding: 12px; border-radius: 8px; background: {{i.bg}}"><span class="chip" style="background: #FFFFFF; color: {{i.fg}}">{{i.kind}}</span><div style="display: flex; flex-direction: column; gap: 2px; font-size: 13px; line-height: 1.5"><strong>{{i.title}}</strong><span style="color: #3A3528">{{i.detail}}</span></div></li></sc-for>
+</ul>
+</div>
+</section>
+
+<section class="card" style="padding: 0">
+<div style="padding: 18px 20px 10px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px"><div><h2 class="h2">Xem trước dữ liệu</h2><p class="sub">8 dòng đầu và các dòng có lỗi · nền đỏ: dòng sẽ bị bỏ qua</p></div></div>
+<div style="overflow-x: auto">
+<table class="tb">
+<thead><tr><th>Dòng</th><th>ma_hs</th><th>ho_ten</th><th>lop</th><th>nam_hoc</th><th>hoc_ky</th><th>mon_hoc</th><th style="text-align: right">diem</th><th>Ghi chú</th></tr></thead>
+<tbody>
+<sc-for list="{{preview}}" as="r"><tr style="background: {{r.bg}}"><td class="num" style="color: #5A5444">{{r.n}}</td><td class="num">{{r.id}}</td><td>{{r.name}}</td><td>{{r.cls}}</td><td class="num">{{r.yr}}</td><td class="num">{{r.hk}}</td><td>{{r.sub}}</td><td class="num" style="text-align: right; font-weight: {{r.w}}">{{r.score}}</td><td style="color: #C01F14; font-size: 12.5px">{{r.note}}</td></tr></sc-for>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="card" style="display: flex; flex-direction: column; gap: 14px; border-color: {{confirmBorder}}">
+<div><h2 class="h2">Xác nhận nhập dữ liệu</h2><p class="sub">Tạo phiên bản mới, giữ nguyên phiên bản cũ để có thể khôi phục</p></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px; font-size: 13px">
+<div><span style="color: #5A5444">Phiên bản mới</span><br><strong class="num">ds-2026.10.1</strong></div>
+<div><span style="color: #5A5444">Bản ghi thêm mới</span><br><strong class="num">1.994</strong></div>
+<div><span style="color: #5A5444">Bản ghi trùng khóa sẽ ghi đè</span><br><strong class="num" style="color: #B54708">1.284</strong></div>
+<div><span style="color: #5A5444">Mô hình bị ảnh hưởng</span><br><strong>Cần đánh giá lại v0.3.0</strong></div>
+</div>
+<div style="padding: 12px 14px; border-radius: 8px; background: #FFFAEB; border: 1px solid #FEC84B; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 13px; color: #3A3528; line-height: 1.55"><strong class="warn">1.284 bản ghi đã tồn tại</strong> (cùng mã HS, năm học, học kỳ, môn) sẽ được thay bằng giá trị trong file. Thao tác được ghi vào nhật ký kiểm toán.</span>
+<label class="ck"><input type="checkbox" checked="{{agree}}" onChange="{{toggleAgree}}">Tôi đã xem trước dữ liệu và đồng ý ghi đè 1.284 bản ghi</label>
+</div>
+<div style="display: flex; gap: 10px; flex-wrap: wrap">
+<button class="btn" style="background: #FFFFFF; border: 1px solid #D9CBA3; color: #111111">Hủy</button>
+<button class="btn" style="background: #2B59FF; color: #FFFFFF" disabled="{{notAgree}}" onClick="{{doImport}}">Xác nhận nhập 3.278 dòng</button>
+</div>
+<sc-if value="{{imported}}" hint-placeholder-val="{{ false }}">
+<div role="status" style="display: flex; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 8px; background: #DCFAE6; color: #067647; font-size: 13.5px; font-weight: 500"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>Đã tạo phiên bản ds-2026.10.1. Báo cáo chất lượng dữ liệu đã được lưu.</div>
+</sc-if>
+</section>
+
+<section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(480px, 100%), 1fr)); gap: 16px">
+<div class="card" style="padding: 0">
+<div style="padding: 18px 20px 10px"><h2 class="h2">Lịch sử nhập dữ liệu</h2></div>
+<div style="overflow-x: auto">
+<table class="tb">
+<thead><tr><th>Phiên bản</th><th>File nguồn</th><th style="text-align: right">Hợp lệ</th><th style="text-align: right">Lỗi</th><th>Người nhập</th><th>Ngày</th><th>Trạng thái</th></tr></thead>
+<tbody>
+<sc-for list="{{history}}" as="h"><tr><td class="num" style="font-weight: 600">{{h.v}}</td><td class="num" style="font-size: 12px">{{h.file}}</td><td class="num" style="text-align: right">{{h.ok}}</td><td class="num" style="text-align: right">{{h.err}}</td><td>{{h.by}}</td><td class="num" style="font-size: 12px">{{h.at}}</td><td><span class="chip" style="background: {{h.bg}}; color: {{h.fg}}">{{h.st}}</span></td></tr></sc-for>
+</tbody>
+</table>
+</div>
+</div>
+<div class="card" style="padding: 0">
+<div style="padding: 18px 20px 10px"><h2 class="h2">Data dictionary</h2><p class="sub">Mô tả trường dữ liệu của bảng grades</p></div>
+<div style="overflow-x: auto">
+<table class="tb">
+<thead><tr><th>Trường</th><th>Mô tả</th><th style="text-align: right">Thiếu</th></tr></thead>
+<tbody>
+<sc-for list="{{dict}}" as="d"><tr><td class="num">{{d.f}}</td><td style="white-space: normal; color: #3A3528">{{d.desc}}</td><td class="num" style="text-align: right">{{d.miss}}</td></tr></sc-for>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1750}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { agree: false, imported: false }; }
+  renderVals() {
+    const { agree, imported } = this.state;
+    const cur = imported ? 4 : 3;
+    const N = ['Tải lên', 'Kiểm tra cấu trúc', 'Xem trước', 'Xác nhận nhập'];
+    const steps = N.map((name, i) => { const done = i < cur, now = i === cur; return { name, mark: done ? '✓' : String(i + 1), bg: done ? '#3DDC97' : now ? '#2B59FF' : '#F3EAD0', fg: done || now ? '#FFFFFF' : '#5A5444', tc: done || now ? '#111111' : '#5A5444', cur: now ? 'step' : 'false' }; });
+    const okI = 'm8 12 3 3 5-6', warnI = 'M12 8v4 M12 16h.01', badI = 'm15 9-6 6 M9 9l6 6';
+    const schema = [
+      { col: 'ma_hs', type: 'chuỗi, duy nhất / HS', req: 'Có', res: 'Khớp', cls: 'ok', icon: okI },
+      { col: 'ho_ten', type: 'chuỗi', req: 'Có', res: 'Khớp', cls: 'ok', icon: okI },
+      { col: 'lop', type: 'chuỗi (VD 9A2)', req: 'Có', res: 'Khớp', cls: 'ok', icon: okI },
+      { col: 'nam_hoc', type: 'YYYY–YYYY', req: 'Có', res: 'Khớp', cls: 'ok', icon: okI },
+      { col: 'hoc_ky', type: 'HK1 | HK2', req: 'Có', res: '1 giá trị lạ', cls: 'warn', icon: warnI },
+      { col: 'mon_hoc', type: 'danh mục môn', req: 'Có', res: 'Khớp', cls: 'ok', icon: okI },
+      { col: 'diem', type: 'số 0–10', req: 'Có', res: '4 ngoài thang', cls: 'bad', icon: badI },
+      { col: 'ngay_ghi_nhan', type: 'ngày', req: 'Không', res: 'Không có cột', cls: 'warn', icon: warnI }
+    ];
+    const red = { kind: 'Lỗi', bg: '#FEF3F2', fg: '#C01F14' }, org = { kind: 'Cảnh báo', bg: '#FFFAEB', fg: '#B54708' };
+    const issues = [
+      { title: '4 điểm ngoài thang 0–10', detail: 'Dòng 214, 1.077, 2.310, 3.001 · VD diem = 11,5', ...red },
+      { title: '12 dòng trùng lặp hoàn toàn', detail: 'Giữ một bản, bỏ các bản trùng', ...red },
+      { title: '1 dòng thiếu mã học sinh', detail: 'Dòng 388 · không thể liên kết hồ sơ', ...red },
+      { title: '1 giá trị học kỳ không hợp lệ', detail: 'Dòng 902 · hoc_ky = “HK 3”', ...red },
+      { title: '3 ô bắt đầu bằng dấu “=”', detail: 'Được đọc như văn bản, không thực thi công thức', ...org },
+      { title: 'Không có cột ngay_ghi_nhan', detail: 'Thứ tự thời gian lấy theo nam_hoc + hoc_ky', ...org }
+    ];
+    const P = [
+      ['2', 'HS-2021-0147', 'Nguyễn Minh Anh', '9A2', '2025–2026', 'HK2', 'Toán', '8,1', ''],
+      ['3', 'HS-2021-0147', 'Nguyễn Minh Anh', '9A2', '2025–2026', 'HK2', 'Ngữ văn', '7,1', ''],
+      ['4', 'HS-2021-0147', 'Nguyễn Minh Anh', '9A2', '2025–2026', 'HK2', 'Tiếng Anh', '7,0', ''],
+      ['5', 'HS-2021-0151', 'Bùi Khánh Linh', '9A2', '2025–2026', 'HK2', 'Toán', '9,2', ''],
+      ['214', 'HS-2021-0212', 'Trần Quốc Bảo', '9A3', '2025–2026', 'HK2', 'Tin học', '11,5', 'Điểm ngoài thang 0–10'],
+      ['388', '', 'Lê Văn [—]', '9A4', '2025–2026', 'HK2', 'Toán', '6,0', 'Thiếu mã học sinh'],
+      ['902', 'HS-2022-0318', 'Võ Minh Khang', '8A2', '2025–2026', 'HK 3', 'KHTN', '6,8', 'Học kỳ không hợp lệ']
+    ];
+    const preview = P.map((r) => ({ n: r[0], id: r[1] || '—', name: r[2], cls: r[3], yr: r[4], hk: r[5], sub: r[6], score: r[7], note: r[8], bg: r[8] ? '#FEF3F2' : 'transparent', w: r[8] ? 700 : 400 }));
+    const done = { bg: '#DCFAE6', fg: '#067647' }, gray = { bg: '#F6EFD9', fg: '#3A3528' };
+    const history = [
+      ...(imported ? [{ v: 'ds-2026.10.1', file: 'diem_HK2_2025-2026.xlsx', ok: '3.278', err: '18', by: '[Quản trị viên]', at: '11/10/2026', st: 'Đang dùng', ...done }] : []),
+      { v: 'ds-2026.09.1', file: 'diem_HK1_2025-2026.xlsx', ok: '3.290', err: '6', by: '[Quản trị viên]', at: '08/10/2026', st: imported ? 'Lưu trữ' : 'Đang dùng', ...(imported ? gray : done) },
+      { v: 'ds-2026.03.2', file: 'diem_2024-2025_cả_năm.csv', ok: '6.598', err: '22', by: '[Quản trị viên]', at: '18/03/2026', st: 'Lưu trữ', ...gray }
+    ];
+    const dict = [
+      { f: 'ma_hs', desc: 'Mã định danh học sinh do trường cấp, khóa liên kết mọi bảng', miss: '0,03%' },
+      { f: 'lop / nam_hoc', desc: 'Lớp và năm học tại thời điểm ghi nhận điểm', miss: '0%' },
+      { f: 'hoc_ky', desc: 'HK1 hoặc HK2; kết hợp nam_hoc để sắp xếp thời gian', miss: '0%' },
+      { f: 'mon_hoc', desc: '8 môn đánh giá bằng điểm số theo TT22', miss: '0%' },
+      { f: 'diem', desc: 'Điểm trung bình môn của học kỳ, thang 10, 1 chữ số thập phân', miss: '0,4%' },
+      { f: 'ket_qua_tuyen_sinh', desc: 'Chưa có trong dataset. Cần để kích hoạt dự đoán tuyển sinh', miss: '100%' }
+    ];
+    return {
+      steps, schema, issues, preview, history, dict, agree, imported, notAgree: !agree || imported,
+      confirmBorder: agree && !imported ? '#2B59FF' : '#EADFC3',
+      toggleAgree: () => this.setState({ agree: !agree }), doImport: () => this.setState({ imported: true })
+    };
+  }
+}
+</script>
+</body>
+</html>

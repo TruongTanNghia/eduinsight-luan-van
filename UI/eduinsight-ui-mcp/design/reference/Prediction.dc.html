@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>EduInsight AI — Dự đoán và định hướng</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#FFF8E6;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#111111}
+a{color:#2B59FF}a:hover{color:#2537C9}
+.ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nav{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;color:#CBC7F7;text-decoration:none;font-size:14px;min-height:44px;box-sizing:border-box}
+.nav:hover{background:rgba(255,255,255,.12);color:#FFFFFF}
+.nav.on{background:linear-gradient(90deg,rgba(255,255,255,.24),rgba(255,255,255,.08));box-shadow:0 8px 20px -8px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.18);color:#FFFFFF;font-weight:600}
+.card{background:rgba(255,255,255,.92);border:1px solid #ECE8FB;border-radius:16px;padding:20px;box-sizing:border-box;min-width:0;box-shadow:0 1px 2px rgba(76,29,149,.05),0 12px 32px -16px rgba(109,40,217,.28)}
+h1{background:linear-gradient(90deg,#4C1D95 0%,#C026D3 55%,#F97316 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+polyline{filter:drop-shadow(0 4px 5px rgba(109,40,217,.28))}
+.h2{margin:0;font-size:15px;font-weight:600;color:#111111}
+.sub{margin:4px 0 0;font-size:12.5px;color:#5A5444;line-height:1.5}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.fl{display:flex;flex-direction:column;gap:4px;font-size:12px;color:#5A5444;font-weight:500}
+.sel{height:44px;border:1px solid #D9CBA3;border-radius:8px;background:#FFFFFF;padding:0 12px;font:inherit;font-size:13.5px;color:#111111;min-width:120px;box-sizing:border-box}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.tb{width:100%;border-collapse:collapse;font-size:13.5px}
+.tb th{text-align:left;font-size:12px;font-weight:600;color:#5A5444;padding:10px 12px;border-bottom:1px solid #EADFC3;white-space:nowrap;background:#FFFBEF}
+.tb td{padding:11px 12px;border-bottom:1px solid #F6EFD9;vertical-align:middle;white-space:nowrap}
+.segc{display:inline-flex;padding:4px;border-radius:10px;background:#F3EAD0;gap:4px;flex-wrap:wrap}
+.segc button{border:0;background:none;font:inherit;font-size:13px;font-weight:500;color:#3A3528;padding:0 14px;min-height:38px;border-radius:7px;cursor:pointer}
+.segc button.on{background:linear-gradient(135deg,#7C3AED,#DB2777);color:#FFFFFF !important;color:#111111;font-weight:600;box-shadow:0 1px 2px rgba(15,27,51,.12)}
+.blk{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:10px;border:1px solid #D9CBA3;background:#FFFFFF;min-width:0}
+.arrow{display:flex;align-items:center;justify-content:center;color:#A89C7C;flex:none}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:8px;font:inherit;font-size:13.5px;font-weight:600;border:0;cursor:pointer;box-sizing:border-box}
+.li{display:flex;gap:8px;font-size:13px;line-height:1.5;color:#3A3528}
+
+body{font-family:'Bricolage Grotesque',system-ui,sans-serif !important;color:#111111;background:#FFF4D6}
+a{color:#1D3FCC}a:hover{color:#111111}
+.num,.mono,.ax{font-family:'JetBrains Mono',ui-monospace,monospace !important}
+.card{background:#FFFFFF !important;border:2.5px solid #111111 !important;border-radius:18px !important;box-shadow:5px 5px 0 #111111 !important}
+h1{background:none !important;-webkit-background-clip:border-box !important;background-clip:border-box !important;color:#111111 !important;font-weight:800 !important;letter-spacing:-.03em !important}
+.h2{font-weight:800 !important;font-size:18px;letter-spacing:-.01em;color:#111111}
+.sub{color:#4A4436}
+.chip{border:2px solid #111111}
+.sel,.fsel{border:2.5px solid #111111 !important;border-radius:12px !important;font-weight:600}
+.tb th{background:#FFE9A8 !important;color:#111111 !important;border-bottom:2.5px solid #111111 !important}
+.tb td{border-bottom:1.5px solid #EADFC3 !important}
+polyline{filter:none !important}
+.tog{border:2.5px solid #111111 !important;font-weight:700;color:#111111}
+.tog.on{background:#2B59FF !important;color:#FFFFFF !important;box-shadow:3px 3px 0 #111111 !important}
+.seg,.opt{border:2.5px solid #111111 !important;box-shadow:none}
+.seg.on,.opt.on{background:#FFD23F !important;border-color:#111111 !important;box-shadow:4px 4px 0 #111111 !important}
+.pg{border:2.5px solid #111111 !important;font-weight:700}
+.pg.on{background:#111111 !important;color:#FFD23F !important}
+.segc{background:#FFFFFF !important;border:2.5px solid #111111}
+.segc button.on{background:#2B59FF !important;color:#FFFFFF !important;box-shadow:none !important}
+.btn{border:2.5px solid #111111 !important;border-radius:12px !important;font-weight:800 !important;box-shadow:3px 3px 0 #111111 !important}
+.stat,.blk{border:2.5px solid #111111 !important;border-radius:14px !important}
+.rowb.on{background:#FFD23F !important}
+.clr{border:2.5px solid #111111 !important;font-weight:700}
+.k{color:#111111 !important;font-weight:600 !important}
+.pillnav{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:2.5px solid #111111;border-radius:999px;background:#FFFFFF;font-weight:700;font-size:14px;text-decoration:none;color:#111111;box-sizing:border-box}
+.pillnav:hover{color:#111111;box-shadow:3px 3px 0 #111111}
+.pillnav.on{background:#2B59FF;color:#FFFFFF;box-shadow:3px 3px 0 #111111}
+</style>
+</helmet>
+<div style="min-height: 100vh; background-color: #FFF4D6; background-image: radial-gradient(#E8D9AE 1.2px, transparent 1.2px); background-size: 22px 22px; display: flex; flex-direction: column">
+<header style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; padding: 22px 32px 0; max-width: 1400px; width: 100%; margin: 0 auto; box-sizing: border-box">
+<div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap">
+<a href="Main.dc.html" style="display: inline-block; background: #111111; color: #FFD23F; font-weight: 800; font-size: 22px; padding: 7px 14px; border-radius: 12px; transform: rotate(-2.5deg); letter-spacing: -0.02em; text-decoration: none">EduInsight<span style="color: #FF5A36">!</span></a>
+<nav aria-label="Điều hướng chính" style="display: flex; gap: 8px; flex-wrap: wrap"><a class="pillnav" href="Main.dc.html">Tổng quan</a><a class="pillnav" href="Students.dc.html">Học sinh</a><a class="pillnav" href="ClassAnalysis.dc.html">Lớp học</a><a class="pillnav on" href="Prediction.dc.html" aria-current="page">Dự đoán</a><a class="pillnav" href="ModelEval.dc.html">Mô hình</a><a class="pillnav" href="Reports.dc.html">Báo cáo</a><a class="pillnav" href="DataManagement.dc.html">Dữ liệu</a></nav>
+</div>
+<span aria-label="Tài khoản giáo viên" style="width: 46px; height: 46px; border-radius: 50%; border: 2.5px solid #111111; background: #FF8FC7; display: flex; align-items: center; justify-content: center; font-weight: 800">GV</span>
+</header>
+<main style="width: 100%; max-width: 1400px; margin: 0 auto; min-width: 0; padding: 28px 32px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+<h1 style="margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.01em">Dự đoán &amp; định hướng</h1>
+<span class="chip" style="background: #FFD23F; color: #111111">Dữ liệu minh họa</span>
+</div>
+<p style="margin: 0; font-size: 13.5px; color: #5A5444">Công cụ hỗ trợ quyết định. Không phải phán quyết về tương lai của học sinh.</p>
+</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end">
+<label class="fl">Học sinh<select class="sel" style="min-width: 240px"><option>Nguyễn Minh Anh · 9A2 · HS-2021-0147</option><option>Bùi Khánh Linh · 9A2</option></select></label>
+<div class="fl">Xem trạng thái dữ liệu
+<div class="segc" role="group" aria-label="Trạng thái dữ liệu">
+<button class="{{m1}}" aria-pressed="{{p1}}" onClick="{{setNo}}">Chưa có nhãn tuyển sinh</button>
+<button class="{{m2}}" aria-pressed="{{p2}}" onClick="{{setDemo}}">Có nhãn · DEMO</button>
+</div>
+</div>
+</div>
+</header>
+
+<sc-if value="{{noLabel}}" hint-placeholder-val="{{ true }}">
+<section class="card" style="border-color: #FEC84B; background: #FFFAEB; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; gap: 12px; align-items: flex-start">
+<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" style="width: 22px; height: 22px; color: #B54708; margin-top: 2px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h2 class="h2" style="font-size: 16px">Dự đoán tuyển sinh THPT chưa được kích hoạt</h2>
+<p style="margin: 0; font-size: 13.5px; color: #3A3528; line-height: 1.6; max-width: 90ch">Bộ dữ liệu hiện tại (ds-2026.09.1) chưa có nhãn kết quả thi tuyển sinh vào lớp 10 theo từng trường. Hệ thống không hiển thị xác suất đỗ/trượt cho đến khi có nhãn thật và mô hình được đánh giá trên tập kiểm tra độc lập.</p>
+</div>
+</div>
+<ol style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 10px">
+<sc-for list="{{pipeline}}" as="s">
+<li class="blk" style="border-color: {{s.border}}">
+<span style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: {{s.fg}}"><span class="num" style="width: 22px; height: 22px; border-radius: 50%; background: {{s.bg}}; display: inline-flex; align-items: center; justify-content: center; font-size: 11.5px">{{s.n}}</span>{{s.status}}</span>
+<strong style="font-size: 13.5px">{{s.title}}</strong>
+<span style="font-size: 12px; color: #5A5444; line-height: 1.5">{{s.desc}}</span>
+</li>
+</sc-for>
+</ol>
+<a href="DataManagement.dc.html" style="font-size: 13.5px; font-weight: 600; align-self: flex-start; min-height: 32px; display: inline-flex; align-items: center">Nhập dữ liệu kết quả tuyển sinh</a>
+</section>
+</sc-if>
+
+<sc-if value="{{demo}}" hint-placeholder-val="{{ false }}">
+<section class="card" style="border: 2px dashed #FFB020; display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap"><span class="chip" style="background: #FFB020; color: #FFFFFF">DEMO</span><h2 class="h2" style="font-size: 16px">Chế độ trình diễn khi đã có nhãn tuyển sinh</h2></div>
+<p style="margin: 0; font-size: 13.5px; color: #3A3528; line-height: 1.6; max-width: 90ch">Các xác suất dưới đây là giá trị giả lập để xem trước bố cục, không phải kết quả khoa học. Khi có nhãn thật, mỗi xác suất sẽ đi kèm phiên bản mô hình, khoảng tin cậy và độ hiệu chỉnh (calibration) lấy từ trang Đánh giá mô hình.</p>
+</section>
+</sc-if>
+
+<section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(560px, 100%), 1fr)); gap: 16px">
+
+<div class="card" style="display: flex; flex-direction: column; gap: 14px">
+<div><h2 class="h2">Kiến trúc mô hình chuỗi học kỳ</h2><p class="sub">Mỗi học kỳ là một token gồm điểm các môn và đặc trưng dẫn xuất; Transformer Encoder học quan hệ giữa các kỳ</p></div>
+<div style="display: flex; gap: 6px; align-items: stretch; flex-wrap: wrap">
+<sc-for list="{{tokens}}" as="t">
+<div class="blk" style="flex: 1 1 90px; background: #EEF3FF; border-color: #FF8FC7; padding: 10px">
+<span style="font-size: 11.5px; font-weight: 600; color: #1D3FCC">{{t.label}}</span>
+<span class="num" style="font-size: 11px; color: #3A3528; line-height: 1.5">{{t.vec}}</span>
+</div>
+</sc-for>
+</div>
+<div class="arrow" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></div>
+<div class="blk" style="flex-direction: row; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap"><strong style="font-size: 13px">Embedding tuyến tính + mã hóa vị trí học kỳ</strong><span class="num" style="font-size: 12px; color: #5A5444">d_model = 64</span></div>
+<div class="arrow" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></div>
+<div class="blk" style="background: #2B59FF; border-color: #111111; color: #FFFFFF; flex-direction: row; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap"><strong style="font-size: 13px">Transformer Encoder × 2</strong><span class="num" style="font-size: 12px; color: #CFCBF7">4 head · dropout 0,2 · mask kỳ tương lai</span></div>
+<div class="arrow" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 10px">
+<div class="blk"><strong style="font-size: 13px">Đầu ra A · đang dùng</strong><span style="font-size: 12px; color: #3A3528; line-height: 1.5">Dự báo mức kết quả kỳ kế tiếp (Tốt/Khá/Đạt/Chưa đạt). Nhãn thật lấy từ kỳ sau.</span></div>
+<div class="blk" style="border-style: dashed"><strong style="font-size: 13px">Đầu ra B · chờ nhãn</strong><span style="font-size: 12px; color: #3A3528; line-height: 1.5">Khả năng đạt điều kiện tuyển sinh từng trường. Chỉ bật khi có nhãn thi vào 10.</span></div>
+</div>
+</div>
+
+<div class="card" style="display: flex; flex-direction: column; gap: 14px">
+<div><h2 class="h2">Đặc trưng đầu vào ánh xạ từ schema</h2><p class="sub">Chỉ dùng trường thực sự có trong dataset · xem Data dictionary ở Quản lý dữ liệu</p></div>
+<div style="overflow-x: auto">
+<table class="tb">
+<thead><tr><th>Đặc trưng</th><th>Cột nguồn</th><th>Trạng thái</th></tr></thead>
+<tbody>
+<sc-for list="{{features}}" as="x">
+<tr><td style="font-weight: 500">{{x.name}}</td><td class="num" style="font-size: 12.5px; color: #3A3528">{{x.col}}</td><td><span class="chip" style="background: {{x.bg}}; color: {{x.fg}}">{{x.st}}</span></td></tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+<div style="padding: 14px; border-radius: 10px; background: #EEF3FF; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 12px; font-weight: 600; color: #1D3FCC">Đầu ra A cho học sinh này · {{headA.tag}}</span>
+<span style="font-size: 13.5px; color: #111111">Dự báo HK2 lớp 9 từ 3 kỳ trước: <strong>Tốt</strong> (p = 0,58) · Khá 0,38 · Đạt 0,04</span>
+<span style="font-size: 12.5px; color: #3A3528">Thực tế HK2 lớp 9: <strong>Tốt</strong> · Dự báo khớp. Xác suất chưa hiệu chỉnh; xem độ tin cậy tại <a href="ModelEval.dc.html">Đánh giá mô hình</a>.</span>
+</div>
+</div>
+
+</section>
+
+<section class="card" style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px">
+<div><h2 class="h2">Gợi ý trường THPT</h2><p class="sub">Điểm chuẩn do nhà trường nhập kèm nguồn. Hệ thống không tự điền điểm chuẩn.</p></div>
+</div>
+
+<sc-if value="{{noLabel}}" hint-placeholder-val="{{ true }}">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 20px">
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 10px; padding: 32px 20px; border: 1px dashed #D9CBA3; border-radius: 12px; background: #FBFAFF">
+<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" style="width: 30px; height: 30px; color: #A89C7C"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 10h.01"/><path d="M15 10h.01"/></svg>
+<strong style="font-size: 15px">Chưa có dữ liệu điểm chuẩn</strong>
+<span style="font-size: 13px; color: #5A5444; max-width: 44ch; line-height: 1.55">Thêm các trường mục tiêu cùng điểm chuẩn và nguồn tham chiếu để so sánh. Chênh lệch điểm sẽ được tính; xác suất chỉ hiển thị khi mô hình đầu ra B đã sẵn sàng.</span>
+</div>
+<form aria-label="Thêm trường THPT" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px; align-content: start">
+<label class="fl" style="grid-column: 1 / -1">Tên trường<input class="sel" type="text" placeholder="VD: THPT [tên trường]"></label>
+<label class="fl">Năm tuyển sinh<select class="sel"><option>2026</option><option>2025</option></select></label>
+<label class="fl">Phương thức<select class="sel"><option>Thi tuyển 3 môn</option><option>Xét tuyển học bạ</option><option>Kết hợp</option></select></label>
+<label class="fl">Điểm chuẩn<input class="sel num" type="text" inputmode="decimal" placeholder="[điểm chuẩn]"></label>
+<label class="fl">Loại hình<select class="sel"><option>Công lập</option><option>Ngoài công lập</option></select></label>
+<label class="fl" style="grid-column: 1 / -1">Nguồn tham chiếu<input class="sel" type="text" placeholder="Quyết định / thông báo của Sở GD&amp;ĐT, đường dẫn"></label>
+<button class="btn" type="button" style="background: #2B59FF; color: #FFFFFF; justify-self: start">Thêm trường</button>
+</form>
+</div>
+</sc-if>
+
+<sc-if value="{{demo}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="overflow-x: auto">
+<table class="tb">
+<thead><tr><th>Trường (nhập tay)</th><th>Phương thức</th><th style="text-align: right">Điểm chuẩn</th><th style="text-align: right">Chênh lệch điểm</th><th style="text-align: right">Xác suất mô hình</th><th>Nhóm lựa chọn</th></tr></thead>
+<tbody>
+<sc-for list="{{schools}}" as="s">
+<tr>
+<td><div style="display: flex; flex-direction: column"><span style="font-weight: 600">{{s.name}}</span><span style="font-size: 11.5px; color: #5A5444">{{s.src}}</span></div></td>
+<td>{{s.method}}</td>
+<td class="num" style="text-align: right">{{s.cut}}</td>
+<td class="num" style="text-align: right; font-weight: 600; color: {{s.gc}}">{{s.gap}}</td>
+<td style="text-align: right"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 80px; height: 8px; background: #F6EFD9; border-radius: 4px; overflow: hidden; display: inline-block"><span style="display: block; height: 100%; width: {{s.pw}}%; background: #A89C7C"></span></span><span class="num">{{s.p}}</span><span class="chip" style="background: #FFE9A8; color: #B54708; padding: 1px 6px; font-size: 10.5px">DEMO</span></span></td>
+<td><span class="chip" style="background: {{s.bg}}; color: {{s.fg}}">{{s.group}}</span></td>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+<p class="sub" style="margin: 0">Chênh lệch điểm = tổng ĐTB HK2 của Toán + Ngữ văn + Tiếng Anh (8,1 + 7,1 + 7,0 = 22,2) − điểm chuẩn. Đây là phép so sánh tham khảo, không phải điểm thi dự kiến. Xác suất mô hình là đại lượng khác và được hiển thị riêng.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 16px; padding-top: 6px">
+<div style="display: flex; flex-direction: column; gap: 10px">
+<strong style="font-size: 13.5px">Môn cần cải thiện để tiến gần [Trường A]</strong>
+<sc-for list="{{improve}}" as="i">
+<div style="display: grid; grid-template-columns: 84px 1fr 52px; gap: 10px; align-items: center">
+<span style="font-size: 13px">{{i.name}}</span>
+<span style="height: 12px; background: #F6EFD9; border-radius: 4px; overflow: hidden; display: block"><span style="display: block; height: 100%; width: {{i.w}}%; background: #FFB020"></span></span>
+<span class="num" style="font-size: 12.5px; text-align: right">{{i.v}}</span>
+</div>
+</sc-for>
+<span style="font-size: 12px; color: #5A5444; line-height: 1.5">Phân bổ khoảng cách 2,3 điểm theo dư địa từng môn so với mức cao nhất học sinh từng đạt. Tính từ dữ liệu, không dùng mô hình.</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: 10px; background: #FFFBEF">
+<strong style="font-size: 13.5px">Cách đọc nhóm lựa chọn</strong>
+<span class="li"><span class="chip" style="background: #DCE5FF; color: #1D3FCC">Mục tiêu</span>Điểm hiện tại thấp hơn điểm chuẩn; cần cải thiện rõ.</span>
+<span class="li"><span class="chip" style="background: #DCFAE6; color: #067647">Phù hợp</span>Chênh lệch trong khoảng ±1 điểm.</span>
+<span class="li"><span class="chip" style="background: #F6EFD9; color: #3A3528">Dự phòng</span>Cao hơn điểm chuẩn trên 1 điểm.</span>
+</div>
+</div>
+</div>
+</sc-if>
+</section>
+
+<section class="card" style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px">
+<div><h2 class="h2">Các phương án học tập sau THCS</h2><p class="sub">Trình bày các yếu tố liên quan để giáo viên, học sinh và gia đình cùng cân nhắc. Hệ thống không tự xếp học sinh vào phương án nào.</p></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 12px">
+<sc-for list="{{paths}}" as="p">
+<div class="blk" style="gap: 10px; padding: 16px">
+<strong style="font-size: 14.5px">{{p.title}}</strong>
+<span style="font-size: 12.5px; color: #3A3528; line-height: 1.55">{{p.desc}}</span>
+<div style="display: flex; flex-direction: column; gap: 6px; padding-top: 8px; border-top: 1px solid #F6EFD9">
+<sc-for list="{{p.facts}}" as="f">
+<span class="li"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true" style="width: 16px; height: 16px; margin-top: 2px; color: {{f.color}}"><circle cx="12" cy="12" r="9"/><path d="{{f.icon}}"/></svg><span><strong style="font-weight: 600; color: {{f.color}}">{{f.st}}</strong> · {{f.text}}</span></span>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px">
+<label class="fl">Nguyện vọng của học sinh (giáo viên ghi nhận sau trao đổi)<input class="sel" type="text" placeholder="[chưa ghi nhận]"></label>
+<label class="fl">Ghi chú tư vấn<input class="sel" type="text" placeholder="Nội dung trao đổi với gia đình"></label>
+</div>
+<p style="margin: 0; font-size: 12.5px; color: #3A3528; padding: 12px 14px; background: #FFF8E6; border-radius: 8px; line-height: 1.55">Hệ thống không thu thập hoàn cảnh gia đình hay điều kiện kinh tế. Các yếu tố này cần được trao đổi trực tiếp. Quyết định cuối cùng thuộc về học sinh và gia đình.</p>
+</section>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2500}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { mode: 'no' }; }
+  renderVals() {
+    const demo = this.state.mode === 'demo';
+    const done = { bg: '#3DDC97', fg: '#067647', border: '#A6EFC8' }, wait = { bg: '#FFB020', fg: '#B54708', border: '#FEC84B' }, lock = { bg: '#A89C7C', fg: '#3A3528', border: '#D9CBA3' };
+    const pipeline = [
+      { n: '1', status: 'Đang chờ', title: 'Thu thập nhãn thi vào 10', desc: 'Kết quả trúng tuyển theo trường, năm, phương thức của các khóa trước.', ...wait },
+      { n: '2', status: 'Đang chờ', title: 'Ghép với hồ sơ học tập', desc: 'Liên kết theo mã học sinh, kiểm tra trùng lặp và thiếu kỳ.', ...wait },
+      { n: '3', status: 'Pipeline sẵn sàng', title: 'Huấn luyện và đánh giá', desc: 'Chia theo học sinh, so sánh với baseline, hiệu chỉnh xác suất.', ...done },
+      { n: '4', status: 'Đang khóa', title: 'Kích hoạt dự đoán', desc: 'Chỉ mở khi đạt tiêu chí đánh giá đã thống nhất.', ...lock }
+    ];
+    const tokens = [
+      { label: 'HK1 lớp 8', vec: '[6,8 7,0 8,2 … ĐTB 7,66]' },
+      { label: 'HK2 lớp 8', vec: '[7,2 7,1 7,9 … ĐTB 7,73]' },
+      { label: 'HK1 lớp 9', vec: '[7,6 6,9 7,4 … ĐTB 7,74]' },
+      { label: 'HK2 lớp 9', vec: '[8,1 7,1 7,0 … ĐTB 7,90]' }
+    ];
+    const ok = { st: 'Có trong dataset', bg: '#DCFAE6', fg: '#067647' }, der = { st: 'Dẫn xuất', bg: '#DCE5FF', fg: '#1D3FCC' }, no = { st: 'Không có', bg: '#F6EFD9', fg: '#3A3528' };
+    const features = [
+      { name: 'Điểm 8 môn theo kỳ', col: 'grades.score × subject × semester', ...ok },
+      { name: 'ĐTB kỳ', col: 'mean(grades.score)', ...der },
+      { name: 'Δ so với kỳ trước', col: 'score[t] − score[t−1]', ...der },
+      { name: 'Độ biến động', col: 'std(score, 4 kỳ)', ...der },
+      { name: 'Mặt nạ thiếu dữ liệu', col: 'is_missing', ...der },
+      { name: 'Nhãn thi vào 10', col: 'admission_results', ...no }
+    ];
+    const blue = { bg: '#DCE5FF', fg: '#1D3FCC' }, green = { bg: '#DCFAE6', fg: '#067647' }, gray = { bg: '#F6EFD9', fg: '#3A3528' };
+    const schools = [
+      { name: '[Trường A]', src: 'Nguồn: [thông báo Sở GD&ĐT]', method: 'Thi 3 môn', cut: '24,50', gap: '−2,30', gc: '#C01F14', p: '0,21', pw: 21, group: 'Mục tiêu', ...blue },
+      { name: '[Trường B]', src: 'Nguồn: [thông báo Sở GD&ĐT]', method: 'Thi 3 môn', cut: '21,75', gap: '+0,45', gc: '#067647', p: '0,57', pw: 57, group: 'Phù hợp', ...green },
+      { name: '[Trường C]', src: 'Nguồn: [thông báo của trường]', method: 'Xét học bạ', cut: '18,00', gap: '+4,20', gc: '#067647', p: '0,88', pw: 88, group: 'Dự phòng', ...gray }
+    ];
+    const improve = [{ name: 'Tiếng Anh', v: '+1,2', w: 100 }, { name: 'Ngữ văn', v: '+0,9', w: 75 }, { name: 'Toán', v: '+0,2', w: 17 }];
+    const yes = { st: 'Đã xác minh', color: '#067647', icon: 'm8 12 3 3 5-6' }, miss = { st: 'Chưa có dữ liệu', color: '#B54708', icon: 'M12 8v4 M12 16h.01' }, ask = { st: 'Cần trao đổi', color: '#3A3528', icon: 'M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7 M12 17h.01' };
+    const paths = [
+      { title: 'THPT công lập', desc: 'Thi tuyển hoặc xét tuyển theo quy định của Sở GD&ĐT.', facts: [{ ...yes, text: 'Kết quả học tập 4 kỳ' }, { ...(demo ? yes : miss), text: 'Điểm chuẩn các trường mục tiêu' }, { ...ask, text: 'Nguyện vọng, khoảng cách đi lại' }] },
+      { title: 'THPT ngoài công lập', desc: 'Tiêu chí tuyển sinh riêng của từng trường.', facts: [{ ...yes, text: 'Kết quả học tập 4 kỳ' }, { ...miss, text: 'Tiêu chí đầu vào từng trường' }, { ...ask, text: 'Học phí, điều kiện gia đình' }] },
+      { title: 'Giáo dục thường xuyên', desc: 'Chương trình GDTX cấp THPT, có thể kết hợp học nghề.', facts: [{ ...yes, text: 'Kết quả học tập 4 kỳ' }, { ...miss, text: 'Danh sách trung tâm GDNN-GDTX' }, { ...ask, text: 'Nguyện vọng, lịch học' }] },
+      { title: 'Giáo dục nghề nghiệp', desc: 'Trung cấp, sơ cấp nghề theo sở thích và năng lực.', facts: [{ ...yes, text: 'Môn có kết quả nổi bật' }, { ...miss, text: 'Ngành nghề, cơ sở đào tạo' }, { ...ask, text: 'Sở thích, định hướng nghề' }] }
+    ];
+    return {
+      noLabel: !demo, demo, pipeline, tokens, features, schools, improve, paths,
+      headA: { tag: demo ? 'DEMO' : 'DEMO · số liệu bố cục' },
+      m1: demo ? '' : 'on', m2: demo ? 'on' : '', p1: demo ? 'false' : 'true', p2: demo ? 'true' : 'false',
+      setNo: () => this.setState({ mode: 'no' }), setDemo: () => this.setState({ mode: 'demo' })
+    };
+  }
+}
+</script>
+</body>
+</html>

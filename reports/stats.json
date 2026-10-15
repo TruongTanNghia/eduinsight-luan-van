@@ -1,0 +1,30 @@
+{
+  "n_blocks": 120,
+  "models": [
+    "MLP",
+    "Bi-LSTM",
+    "TabNet",
+    "FT-Transformer",
+    "TabPFN",
+    "TabKANet",
+    "Kanformer",
+    "XEdu-KANFormer",
+    "Hồi quy tuyến tính",
+    "XGBoost"
+  ],
+  "friedman_chi2": 559.1127272727272,
+  "friedman_p": 1.2378393868207816e-114,
+  "avg_rank": {
+    "TabPFN": 1.142,
+    "XGBoost": 3.233,
+    "MLP": 4.3,
+    "TabKANet": 5.042,
+    "Kanformer": 5.658,
+    "XEdu-KANFormer": 5.975,
+    "FT-Transformer": 6.95,
+    "Bi-LSTM": 7.017,
+    "TabNet": 7.033,
+    "Hồi quy tuyến tính": 8.65
+  },
+  "nemenyi_cd": 1.2367062886734443
+}

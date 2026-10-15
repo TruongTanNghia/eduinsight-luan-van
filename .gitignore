@@ -1,0 +1,39 @@
+# ---- Dữ liệu học sinh: KHÔNG đưa lên git (họ tên, ngày sinh, số định danh của học sinh vị thành niên)
+data/raw/*
+!data/raw/README.md
+data/private/
+data/processed/
+outputs/
+archive/
+reports/predictions.csv
+
+# ---- Mô hình đã huấn luyện (học từ dữ liệu học sinh; TabPFN.pkl ~450 MB) – tạo lại bằng scripts/train.bat
+models/*.pkl
+models/serving.json
+
+# ---- Nhật ký chạy
+results_log*.txt
+*.log
+
+# ---- Python
+__pycache__/
+*.pyc
+.venv/
+.streamlit/secrets.toml
+
+# ---- Node / Next.js
+node_modules/
+frontend/.next/
+frontend/out/
+frontend/next-env.d.ts
+*.tsbuildinfo
+
+# ---- Gói UI (đã giải nén ở UI/eduinsight-ui-mcp)
+UI/*.zip
+
+# ---- Cấu hình máy cá nhân
+.mcp.json
+.claude/
+.vscode/
+.DS_Store
+Thumbs.db

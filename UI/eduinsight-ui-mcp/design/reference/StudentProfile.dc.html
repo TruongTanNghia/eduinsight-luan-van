@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>EduInsight AI — Hồ sơ học sinh</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#FFF8E6;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#111111}
+a{color:#2B59FF}a:hover{color:#2537C9}
+.ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nav{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;color:#CBC7F7;text-decoration:none;font-size:14px;min-height:44px;box-sizing:border-box}
+.nav:hover{background:rgba(255,255,255,.12);color:#FFFFFF}
+.nav.on{background:linear-gradient(90deg,rgba(255,255,255,.24),rgba(255,255,255,.08));box-shadow:0 8px 20px -8px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.18);color:#FFFFFF;font-weight:600}
+.card{background:rgba(255,255,255,.92);border:1px solid #ECE8FB;border-radius:16px;padding:20px;box-sizing:border-box;min-width:0;box-shadow:0 1px 2px rgba(76,29,149,.05),0 12px 32px -16px rgba(109,40,217,.28)}
+h1{background:linear-gradient(90deg,#4C1D95 0%,#C026D3 55%,#F97316 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+polyline{filter:drop-shadow(0 4px 5px rgba(109,40,217,.28))}
+.h2{margin:0;font-size:15px;font-weight:600;color:#111111}
+.sub{margin:4px 0 0;font-size:12.5px;color:#5A5444;line-height:1.5}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.tb{width:100%;border-collapse:collapse;font-size:13.5px}
+.tb th{text-align:left;font-size:12px;font-weight:600;color:#5A5444;padding:10px 12px;border-bottom:1px solid #EADFC3;white-space:nowrap;background:#FFFBEF}
+.tb td{padding:11px 12px;border-bottom:1px solid #F6EFD9;vertical-align:middle;white-space:nowrap}
+.ax{font-size:11px;fill:#5A5444;font-family:'IBM Plex Mono',monospace}
+.grid{stroke:#EFE5C9;stroke-width:1}
+.lg{display:flex;align-items:center;gap:6px;font-size:12px;color:#3A3528}
+.sw{width:10px;height:10px;border-radius:3px;flex:none}
+.tog{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:0 12px;border-radius:999px;border:1px solid #D9CBA3;background:#FFFFFF;font:inherit;font-size:12.5px;color:#3A3528;cursor:pointer}
+.tog.on{border-color:transparent;color:#FFFFFF;font-weight:600;background:linear-gradient(135deg,#7C3AED,#DB2777);box-shadow:0 6px 14px -6px rgba(219,39,119,.6)}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:8px;font-size:13.5px;font-weight:600;text-decoration:none;box-sizing:border-box}
+.stat{display:flex;flex-direction:column;gap:6px;padding:16px;border:1px solid #EADFC3;border-radius:10px;background:#FFFFFF;min-width:0}
+.k{font-size:12px;color:#5A5444;font-weight:500}
+
+body{font-family:'Bricolage Grotesque',system-ui,sans-serif !important;color:#111111;background:#FFF4D6}
+a{color:#1D3FCC}a:hover{color:#111111}
+.num,.mono,.ax{font-family:'JetBrains Mono',ui-monospace,monospace !important}
+.card{background:#FFFFFF !important;border:2.5px solid #111111 !important;border-radius:18px !important;box-shadow:5px 5px 0 #111111 !important}
+h1{background:none !important;-webkit-background-clip:border-box !important;background-clip:border-box !important;color:#111111 !important;font-weight:800 !important;letter-spacing:-.03em !important}
+.h2{font-weight:800 !important;font-size:18px;letter-spacing:-.01em;color:#111111}
+.sub{color:#4A4436}
+.chip{border:2px solid #111111}
+.sel,.fsel{border:2.5px solid #111111 !important;border-radius:12px !important;font-weight:600}
+.tb th{background:#FFE9A8 !important;color:#111111 !important;border-bottom:2.5px solid #111111 !important}
+.tb td{border-bottom:1.5px solid #EADFC3 !important}
+polyline{filter:none !important}
+.tog{border:2.5px solid #111111 !important;font-weight:700;color:#111111}
+.tog.on{background:#2B59FF !important;color:#FFFFFF !important;box-shadow:3px 3px 0 #111111 !important}
+.seg,.opt{border:2.5px solid #111111 !important;box-shadow:none}
+.seg.on,.opt.on{background:#FFD23F !important;border-color:#111111 !important;box-shadow:4px 4px 0 #111111 !important}
+.pg{border:2.5px solid #111111 !important;font-weight:700}
+.pg.on{background:#111111 !important;color:#FFD23F !important}
+.segc{background:#FFFFFF !important;border:2.5px solid #111111}
+.segc button.on{background:#2B59FF !important;color:#FFFFFF !important;box-shadow:none !important}
+.btn{border:2.5px solid #111111 !important;border-radius:12px !important;font-weight:800 !important;box-shadow:3px 3px 0 #111111 !important}
+.stat,.blk{border:2.5px solid #111111 !important;border-radius:14px !important}
+.rowb.on{background:#FFD23F !important}
+.clr{border:2.5px solid #111111 !important;font-weight:700}
+.k{color:#111111 !important;font-weight:600 !important}
+.pillnav{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:2.5px solid #111111;border-radius:999px;background:#FFFFFF;font-weight:700;font-size:14px;text-decoration:none;color:#111111;box-sizing:border-box}
+.pillnav:hover{color:#111111;box-shadow:3px 3px 0 #111111}
+.pillnav.on{background:#2B59FF;color:#FFFFFF;box-shadow:3px 3px 0 #111111}
+</style>
+</helmet>
+<div style="min-height: 100vh; background-color: #FFF4D6; background-image: radial-gradient(#E8D9AE 1.2px, transparent 1.2px); background-size: 22px 22px; display: flex; flex-direction: column">
+<header style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; padding: 22px 32px 0; max-width: 1400px; width: 100%; margin: 0 auto; box-sizing: border-box">
+<div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap">
+<a href="Main.dc.html" style="display: inline-block; background: #111111; color: #FFD23F; font-weight: 800; font-size: 22px; padding: 7px 14px; border-radius: 12px; transform: rotate(-2.5deg); letter-spacing: -0.02em; text-decoration: none">EduInsight<span style="color: #FF5A36">!</span></a>
+<nav aria-label="Điều hướng chính" style="display: flex; gap: 8px; flex-wrap: wrap"><a class="pillnav" href="Main.dc.html">Tổng quan</a><a class="pillnav on" href="Students.dc.html" aria-current="page">Học sinh</a><a class="pillnav" href="ClassAnalysis.dc.html">Lớp học</a><a class="pillnav" href="Prediction.dc.html">Dự đoán</a><a class="pillnav" href="ModelEval.dc.html">Mô hình</a><a class="pillnav" href="Reports.dc.html">Báo cáo</a><a class="pillnav" href="DataManagement.dc.html">Dữ liệu</a></nav>
+</div>
+<span aria-label="Tài khoản giáo viên" style="width: 46px; height: 46px; border-radius: 50%; border: 2.5px solid #111111; background: #FF8FC7; display: flex; align-items: center; justify-content: center; font-weight: 800">GV</span>
+</header>
+<main style="width: 100%; max-width: 1400px; margin: 0 auto; min-width: 0; padding: 24px 32px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+
+<div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5A5444; flex-wrap: wrap">
+<a href="Students.dc.html">Học sinh</a><span aria-hidden="true">/</span><span>9A2</span><span aria-hidden="true">/</span><span style="color: #111111; font-weight: 500">Nguyễn Minh Anh</span>
+<span class="chip" style="background: #FFD23F; color: #111111; margin-left: 8px">Dữ liệu minh họa</span>
+</div>
+
+<section class="card" style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between">
+<div style="display: flex; gap: 18px; align-items: center; flex-wrap: wrap">
+<div aria-hidden="true" style="width: 72px; height: 72px; border-radius: 50%; background: #FF8FC7; color: #111111; border: 2.5px solid #111111; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700">MA</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 style="margin: 0; font-size: 24px; font-weight: 700">Nguyễn Minh Anh</h1>
+<div style="display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: #3A3528">
+<span>Mã HS <strong class="num">HS-2021-0147</strong></span><span>Lớp <strong>9A2</strong></span><span>Khối <strong>9</strong></span><span>Năm học <strong>2025–2026</strong></span>
+</div>
+<span style="font-size: 12px; color: #5A5444">Ảnh đại diện: không có trong dữ liệu · Chỉ hiển thị trường có trong dataset</span>
+</div>
+</div>
+<div style="display: flex; gap: 12px; flex-wrap: wrap">
+<div class="stat" style="min-width: 150px"><span class="k">ĐTB HK2 2025–2026</span><span class="num" style="font-size: 26px; font-weight: 600">{{latestAvg}}</span></div>
+<div class="stat" style="min-width: 190px"><span class="k">Xu hướng gần đây</span><span style="font-size: 16px; font-weight: 600; color: {{overall.color}}">{{overall.label}}</span><span class="num" style="font-size: 12px; color: #5A5444">{{overall.detail}}</span></div>
+</div>
+<div style="display: flex; gap: 10px; flex-wrap: wrap">
+<a class="btn" href="Reports.dc.html" style="border: 1px solid #D9CBA3; color: #111111; background: #FFFFFF"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>Xuất báo cáo</a>
+<a class="btn" href="Prediction.dc.html" style="background: #2B59FF; color: #FFFFFF"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-2.12 6.36-6.36 2.12 2.12-6.36z"/></svg>Định hướng</a>
+</div>
+</section>
+
+<section class="card" style="padding: 0">
+<div style="padding: 18px 20px 12px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px">
+<div><h2 class="h2">Bảng điểm theo môn và học kỳ</h2><p class="sub">Điểm trung bình môn từng kỳ, thang 10 · Xu hướng tính từ các kỳ liên tiếp, ngưỡng thay đổi có ý nghĩa ±{{tLabel}}</p></div>
+<span class="chip" style="background: #DCE5FF; color: #1D3FCC; align-self: center">Thực tế · tính từ dữ liệu</span>
+</div>
+<div style="overflow-x: auto">
+<table class="tb">
+<thead><tr><th>Môn học</th><sc-for list="{{sems}}" as="s"><th style="text-align: right">{{s.long}}</th></sc-for><th style="text-align: right">ĐTB lớp HK2</th><th>Xu hướng</th></tr></thead>
+<tbody>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="8">
+<tr>
+<td style="font-weight: 600">{{r.name}}</td>
+<sc-for list="{{r.cells}}" as="c"><td class="num" style="text-align: right; color: {{c.color}}">{{c.label}}</td></sc-for>
+<td class="num" style="text-align: right; color: #5A5444">{{r.classAvg}}</td>
+<td><span class="chip" style="background: {{r.trend.bg}}; color: {{r.trend.fg}}">{{r.trend.label}}</span></td>
+</tr>
+</sc-for>
+<tr style="background: #FFFBEF">
+<td style="font-weight: 700">ĐTB kỳ</td>
+<sc-for list="{{semAvg}}" as="c"><td class="num" style="text-align: right; font-weight: 600">{{c.label}}</td></sc-for>
+<td></td><td style="font-size: 12px; color: #5A5444">Trung bình các môn có điểm</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(560px, 100%), 1fr)); gap: 16px">
+
+<div class="card">
+<div><h2 class="h2">Điểm từng môn qua các kỳ</h2><p class="sub">Chọn một hoặc nhiều môn để so sánh</p></div>
+<div role="group" aria-label="Chọn môn hiển thị" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px">
+<sc-for list="{{toggles}}" as="t"><button class="{{t.cls}}" aria-pressed="{{t.pressed}}" onClick="{{t.toggle}}"><span class="sw" style="background: {{t.color}}"></span>{{t.name}}</button></sc-for>
+</div>
+<svg viewBox="0 0 600 260" style="width: 100%; height: auto; margin-top: 10px" role="img" aria-label="Biểu đồ đường điểm các môn đã chọn qua 4 học kỳ">
+<sc-for list="{{lc.grid}}" as="g"><line class="grid" x1="40" x2="584" y1="{{g.y}}" y2="{{g.y}}"></line><text class="ax" x="32" y="{{g.ty}}" style="text-anchor: end">{{g.label}}</text></sc-for>
+<sc-for list="{{lc.xs}}" as="x"><text class="ax" x="{{x.x}}" y="252" style="text-anchor: middle">{{x.label}}</text></sc-for>
+<sc-for list="{{lc.series}}" as="s">
+<g><polyline points="{{s.points}}" fill="none" stroke="{{s.color}}" style="stroke-width: 2.5"></polyline>
+<sc-for list="{{s.pts}}" as="p"><circle cx="{{p.x}}" cy="{{p.y}}" r="4.5" fill="#FFFFFF" stroke="{{s.color}}" style="stroke-width: 2.5"><title>{{p.tip}}</title></circle></sc-for></g>
+</sc-for>
+</svg>
+<sc-if value="{{lc.none}}" hint-placeholder-val="{{ false }}"><p class="sub" style="text-align: center">Chưa chọn môn nào. Chọn ít nhất một môn ở trên.</p></sc-if>
+</div>
+
+<div class="card">
+<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px">
+<div><h2 class="h2">Điểm các môn kỳ gần nhất so với lớp</h2><p class="sub">HK2 2025–2026 · cá nhân và ĐTB lớp 9A2</p></div>
+<div style="display: flex; gap: 12px"><span class="lg"><span class="sw" style="background: #2B59FF"></span>Nguyễn Minh Anh</span><span class="lg"><span class="sw" style="background: #FF8FC7"></span>ĐTB lớp</span></div>
+</div>
+<div style="margin-top: 18px; height: 220px; display: flex; align-items: flex-end; gap: 12px; border-bottom: 1px solid #D9CBA3; padding: 0 4px">
+<sc-for list="{{cmp}}" as="c" hint-placeholder-count="8">
+<div style="flex: 1; display: flex; gap: 3px; align-items: flex-end; height: 100%" title="{{c.tip}}">
+<div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px"><span class="num" style="font-size: 10.5px; font-weight: 600">{{c.me}}</span><div style="width: 100%; height: {{c.hMe}}px; background: #2B59FF; border: 2px solid #111111; border-bottom: 0; box-sizing: border-box; border-radius: 6px 6px 0 0"></div></div>
+<div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px"><span class="num" style="font-size: 10.5px; color: #5A5444">{{c.cl}}</span><div style="width: 100%; height: {{c.hCl}}px; background: #FF8FC7; border: 2px solid #111111; border-bottom: 0; box-sizing: border-box; border-radius: 6px 6px 0 0"></div></div>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 12px; padding: 8px 4px 0"><sc-for list="{{cmp}}" as="c"><span style="flex: 1; text-align: center; font-size: 11.5px; color: #3A3528">{{c.short}}</span></sc-for></div>
+<p class="sub" style="margin-top: 8px">Trục bắt đầu từ 5,0.</p>
+</div>
+
+<div class="card">
+<div><h2 class="h2">Mức tăng/giảm so với kỳ trước</h2><p class="sub">HK2 so với HK1 năm học 2025–2026 · vùng xám: dưới ngưỡng ±{{tLabel}}, coi là ổn định</p></div>
+<div style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px">
+<sc-for list="{{deltas}}" as="d" hint-placeholder-count="8">
+<div style="display: grid; grid-template-columns: 84px 1fr 1fr 56px; align-items: center; gap: 0">
+<span style="font-size: 13px; font-weight: 500">{{d.name}}</span>
+<span style="display: flex; justify-content: flex-end; height: 18px; border-right: 1.5px solid #A89C7C; background: linear-gradient(to left, #F6EFD9 {{d.band}}%, transparent {{d.band}}%)"><span style="width: {{d.neg}}%; background: #FF5A36; border-radius: 3px 0 0 3px"></span></span>
+<span style="display: flex; height: 18px; background: linear-gradient(to right, #F6EFD9 {{d.band}}%, transparent {{d.band}}%)"><span style="width: {{d.pos}}%; background: #3DDC97; border-radius: 0 3px 3px 0"></span></span>
+<span class="num" style="font-size: 12.5px; text-align: right; font-weight: 600; color: {{d.color}}">{{d.label}}</span>
+</div>
+</sc-for>
+</div>
+<div style="display: grid; grid-template-columns: 84px 1fr 1fr 56px; margin-top: 6px"><span></span><span class="num" style="font-size: 10.5px; color: #5A5444">−0,6</span><span class="num" style="font-size: 10.5px; color: #5A5444; text-align: right">+0,6</span><span></span></div>
+</div>
+
+<div class="card">
+<div><h2 class="h2">Heatmap môn học theo học kỳ</h2><p class="sub">Màu đậm hơn = điểm cao hơn · ô gạch chéo: thiếu dữ liệu</p></div>
+<div style="overflow-x: auto; margin-top: 14px">
+<div style="display: grid; grid-template-columns: 96px repeat(4, minmax(72px, 1fr)); gap: 4px; min-width: 420px">
+<span></span><sc-for list="{{sems}}" as="s"><span style="font-size: 11.5px; color: #5A5444; text-align: center; padding-bottom: 4px">{{s.label}}</span></sc-for>
+<sc-for list="{{heat}}" as="h">
+<span style="font-size: 12.5px; font-weight: 500; display: flex; align-items: center">{{h.name}}</span>
+<sc-for list="{{h.cells}}" as="c"><span class="num" title="{{c.tip}}" style="height: 34px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; background: {{c.bg}}; color: {{c.fg}}">{{c.label}}</span></sc-for>
+</sc-for>
+</div>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 11px; color: #5A5444"><span class="num">6,0</span><span style="flex: 0 0 160px; height: 8px; border-radius: 4px; background: linear-gradient(to right, #F0EFFF, #1D3FCC)"></span><span class="num">9,0</span></div>
+</div>
+
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; align-items: baseline">
+<h2 class="h2" style="font-size: 17px">Phân tích tự động</h2>
+<span style="font-size: 12px; color: #5A5444">Tất cả chỉ số tính trực tiếp từ bảng điểm; không phải dự báo mô hình</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px">
+<sc-for list="{{stats}}" as="s" hint-placeholder-count="6">
+<div class="stat"><span class="k">{{s.k}}</span><span style="font-size: 18px; font-weight: 600; color: {{s.color}}">{{s.v}}</span><span class="num" style="font-size: 12px; color: #5A5444">{{s.d}}</span></div>
+</sc-for>
+</div>
+</section>
+
+<section class="card" style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px">
+<div><h2 class="h2">Nhận xét</h2><p class="sub">Sinh tự động từ các phép tính đã xác minh. Giáo viên có thể chỉnh sửa trước khi đưa vào báo cáo.</p></div>
+<span class="chip" style="background: #DCE5FF; color: #1D3FCC; align-self: flex-start">Thực tế · không dùng mô hình</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px; font-size: 14.5px; line-height: 1.65; color: #111111; max-width: 80ch">
+<sc-for list="{{remarks}}" as="m"><p style="margin: 0">{{m}}</p></sc-for>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; padding-top: 12px; border-top: 1px solid #F6EFD9">
+<span style="font-size: 12px; color: #5A5444; align-self: center">Căn cứ:</span>
+<sc-for list="{{evidence}}" as="e"><span class="chip num" style="background: #FFF8E6; color: #3A3528; font-weight: 500">{{e}}</span></sc-for>
+</div>
+</section>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"threshold":{"editor":"range","min":0.1,"max":0.6,"step":0.05,"default":0.3,"section":"Quy tắc xu hướng"},"$preview":{"width":1440,"height":2600}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { on: ['Toán', 'Ngữ văn', 'Tiếng Anh'] }; }
+  renderVals() {
+    const t = this.props.threshold ?? 0.3;
+    const f = (v, d) => v == null ? '—' : v.toFixed(d == null ? 1 : d).replace('.', ',');
+    const sgn = (v, d) => (v > 0 ? '+' : v < 0 ? '−' : '±') + f(Math.abs(v), d);
+    const r2 = (v) => Math.round(v * 100) / 100;
+    const sems = [
+      { label: 'HK1 lớp 8', long: 'HK1 24–25' }, { label: 'HK2 lớp 8', long: 'HK2 24–25' },
+      { label: 'HK1 lớp 9', long: 'HK1 25–26' }, { label: 'HK2 lớp 9', long: 'HK2 25–26' }
+    ];
+    const S = [
+      ['Toán', 'Toán', [6.8, 7.2, 7.6, 8.1], 7.1, '#2B59FF'],
+      ['Ngữ văn', 'Văn', [7.0, 7.1, 6.9, 7.1], 7.0, '#FFB020'],
+      ['Tiếng Anh', 'Anh', [8.2, 7.9, 7.4, 7.0], 7.3, '#EE46BC'],
+      ['KHTN', 'KHTN', [7.4, 7.5, 7.9, 7.8], 7.2, '#3DDC97'],
+      ['LS&ĐL', 'LS&ĐL', [7.8, 8.0, 7.7, 7.9], 7.5, '#7A5AF8'],
+      ['GDCD', 'GDCD', [8.5, 8.6, 8.4, 8.8], 8.1, '#06AED4'],
+      ['Tin học', 'Tin', [8.0, null, 8.3, 8.5], 7.8, '#667085'],
+      ['Công nghệ', 'CN', [7.6, 7.8, 7.7, 8.0], 7.6, '#CA8504']
+    ];
+    const trendOf = (v) => {
+      const ds = [];
+      for (let i = 1; i < v.length; i++) if (v[i] != null && v[i - 1] != null) ds.push({ i, d: r2(v[i] - v[i - 1]) });
+      const n = v.filter((x) => x != null).length;
+      if (n < 3) return { label: 'Chưa đủ dữ liệu', bg: '#F6EFD9', fg: '#3A3528', streak: 0, dir: 0, ds };
+      let streak = 0, dir = 0;
+      for (let k = ds.length - 1; k >= 0; k--) {
+        const s = ds[k].d >= t ? 1 : ds[k].d <= -t ? -1 : 0;
+        if (s === 0 || (dir !== 0 && s !== dir) || ds[k].i !== (k === ds.length - 1 ? v.length - 1 : ds[k + 1].i - 1)) break;
+        dir = s; streak++;
+      }
+      if (streak >= 2) return dir > 0 ? { label: 'Tăng ' + streak + ' kỳ liên tiếp', bg: '#DCFAE6', fg: '#067647', streak, dir, ds } : { label: 'Giảm ' + streak + ' kỳ liên tiếp', bg: '#FEE4E2', fg: '#C01F14', streak, dir, ds };
+      if (streak === 1) return dir > 0 ? { label: 'Tăng kỳ gần nhất', bg: '#ECFDF3', fg: '#067647', streak, dir, ds } : { label: 'Giảm kỳ gần nhất', bg: '#FEF3F2', fg: '#C01F14', streak, dir, ds };
+      return { label: 'Ổn định', bg: '#F6EFD9', fg: '#3A3528', streak: 0, dir: 0, ds };
+    };
+    const subs = S.map(([name, short, v, ca, color]) => ({ name, short, v, ca, color, trend: trendOf(v) }));
+    const rows = subs.map((s) => ({ name: s.name, classAvg: f(s.ca), trend: s.trend, cells: s.v.map((x) => ({ label: f(x), color: x == null ? '#A89C7C' : '#111111' })) }));
+    const avgs = [0, 1, 2, 3].map((i) => { const xs = subs.map((s) => s.v[i]).filter((x) => x != null); return xs.reduce((a, b) => a + b, 0) / xs.length; });
+    const semAvg = avgs.map((a) => ({ label: f(a, 2) }));
+    const dOverall = r2(avgs[3] - avgs[2]);
+    const overall = dOverall >= t ? { label: 'Tiến bộ', color: '#067647' } : dOverall <= -t ? { label: 'Sa sút', color: '#C01F14' } : { label: 'Ổn định', color: '#111111' };
+    overall.detail = 'ĐTB ' + sgn(dOverall, 2) + ' so với HK1 · ngưỡng ±' + f(t, 2);
+
+    const on = this.state.on;
+    const toggles = subs.map((s) => { const sel = on.includes(s.name); return { name: s.name, color: s.color, pressed: sel ? 'true' : 'false', cls: sel ? 'tog on' : 'tog', toggle: () => this.setState({ on: sel ? on.filter((n) => n !== s.name) : on.concat(s.name) }) }; });
+    const W = 600, H = 260, L = 40, R = 16, T = 16, B = 30, mn = 6, mx = 9;
+    const X = (i) => +(L + 30 + (W - L - R - 60) * i / 3).toFixed(1);
+    const Y = (v) => +(T + (H - T - B) * (1 - (v - mn) / (mx - mn))).toFixed(1);
+    const lc = {
+      grid: [6, 6.5, 7, 7.5, 8, 8.5, 9].map((v) => ({ y: Y(v), ty: Y(v) + 4, label: f(v) })),
+      xs: sems.map((s, i) => ({ x: X(i), label: s.label })),
+      series: subs.filter((s) => on.includes(s.name)).map((s) => { const pts = s.v.map((x, i) => x == null ? null : { x: X(i), y: Y(x), tip: s.name + ' · ' + sems[i].label + ': ' + f(x) }).filter(Boolean); return { color: s.color, pts, points: pts.map((p) => p.x + ',' + p.y).join(' ') }; }),
+      none: on.length === 0
+    };
+    const hb = (v) => Math.round((v - 5) / 4.5 * 180);
+    const cmp = subs.map((s) => ({ short: s.short, me: f(s.v[3]), cl: f(s.ca), hMe: hb(s.v[3]), hCl: hb(s.ca), tip: s.name + ': ' + f(s.v[3]) + ' (lớp ' + f(s.ca) + ', ' + sgn(r2(s.v[3] - s.ca)) + ')' }));
+    const deltas = subs.map((s) => { const d = r2(s.v[3] - s.v[2]); const w = Math.min(Math.abs(d) / 0.6 * 100, 100).toFixed(1); return { name: s.short, label: sgn(d), neg: d < 0 ? w : 0, pos: d > 0 ? w : 0, band: (t / 0.6 * 100).toFixed(1), color: d >= t ? '#067647' : d <= -t ? '#C01F14' : '#3A3528' }; });
+    const lerp = (a, b, k) => Math.round(a + (b - a) * k);
+    const heat = subs.map((s) => ({ name: s.short, cells: s.v.map((x, i) => {
+      if (x == null) return { label: '—', bg: 'repeating-linear-gradient(45deg, #F6EFD9 0 6px, #EADFC3 6px 12px)', fg: '#5A5444', tip: s.name + ' · ' + sems[i].label + ': thiếu dữ liệu' };
+      const k = Math.max(0, Math.min(1, (x - 6) / 3));
+      return { label: f(x), bg: 'rgb(' + lerp(255, 43, k) + ',' + lerp(255, 89, k) + ',' + lerp(255, 255, k) + ')', fg: k > 0.5 ? '#FFFFFF' : '#111111', tip: s.name + ' · ' + sems[i].label + ': ' + f(x) };
+    }) }));
+
+    const last = subs.map((s) => ({ s, d: r2(s.v[3] - s.v[2]) }));
+    const up = last.reduce((a, b) => b.d > a.d ? b : a), dn = last.reduce((a, b) => b.d < a.d ? b : a);
+    const sd = (xs) => { const m = xs.reduce((a, b) => a + b, 0) / xs.length; return Math.sqrt(xs.reduce((a, b) => a + (b - m) * (b - m), 0) / xs.length); };
+    const vol = subs.map((s) => ({ s, v: sd(s.v.filter((x) => x != null)) })).reduce((a, b) => b.v > a.v ? b : a);
+    const longestDown = subs.filter((s) => s.trend.dir < 0).reduce((a, b) => (!a || b.trend.streak > a.trend.streak) ? b : a, null);
+    const missing = subs.filter((s) => s.v.some((x) => x == null));
+    const stats = [
+      { k: 'Môn tăng nhiều nhất (kỳ gần nhất)', v: up.s.name, d: sgn(up.d) + ' điểm', color: '#067647' },
+      { k: 'Môn giảm nhiều nhất (kỳ gần nhất)', v: dn.s.name, d: sgn(dn.d) + ' điểm', color: '#C01F14' },
+      { k: 'ĐTB theo kỳ', v: avgs.map((a) => f(a, 2)).join(' → '), d: '4 kỳ có dữ liệu', color: '#111111' },
+      { k: 'Môn biến động nhất', v: vol.s.name, d: 'độ lệch chuẩn ' + f(vol.v, 2) + ' qua 4 kỳ', color: '#111111' },
+      { k: 'Số kỳ giảm liên tiếp', v: longestDown && longestDown.trend.streak >= 2 ? longestDown.trend.streak + ' kỳ · ' + longestDown.name : 'Không có', d: 'ngưỡng ±' + f(t, 2), color: longestDown && longestDown.trend.streak >= 2 ? '#C01F14' : '#111111' },
+      { k: 'Môn thiếu dữ liệu', v: missing.length ? missing.map((s) => s.name).join(', ') : 'Không có', d: missing.length ? 'thiếu HK2 2024–2025' : 'đủ 4 kỳ', color: missing.length ? '#B54708' : '#111111' }
+    ];
+
+    const remarks = [];
+    const evidence = [];
+    subs.filter((s) => s.trend.streak >= 2 && s.trend.dir > 0).forEach((s) => { const a = s.v[s.v.length - 1 - s.trend.streak]; remarks.push('Điểm ' + s.name + ' tăng qua ' + s.trend.streak + ' kỳ liên tiếp (' + f(a) + ' → ' + f(s.v[3]) + ').'); evidence.push(s.name + ': ' + s.trend.ds.map((x) => sgn(x.d)).join(', ')); });
+    subs.filter((s) => s.trend.streak >= 2 && s.trend.dir < 0).forEach((s) => { const a = s.v[s.v.length - 1 - s.trend.streak]; const gap = r2(s.v[3] - s.ca); remarks.push(s.name + ' giảm trong ' + s.trend.streak + ' kỳ liên tiếp (' + f(a) + ' → ' + f(s.v[3]) + ')' + (gap < 0 ? ', hiện thấp hơn ĐTB lớp ' + f(-gap) + ' điểm' : '') + '. Nên xem lại các phần kiến thức ' + s.name + ' có kết quả thấp và theo dõi ở kỳ tiếp theo.'); evidence.push(s.name + ': ' + s.trend.ds.map((x) => sgn(x.d)).join(', ')); });
+    missing.forEach((s) => remarks.push(s.name + ' thiếu điểm HK2 năm học 2024–2025 nên chưa đủ căn cứ để nhận xét xu hướng dài hạn của môn này.'));
+    if (remarks.length === missing.length) remarks.unshift('Chưa có môn nào thay đổi vượt ngưỡng ±' + f(t, 2) + ' trong hai kỳ liên tiếp; kết quả nhìn chung ổn định.');
+    evidence.push('Ngưỡng ±' + f(t, 2));
+    evidence.push('ĐTB HK2 vs HK1: ' + sgn(dOverall, 2));
+
+    return { sems, rows, semAvg, latestAvg: f(avgs[3], 2), overall, toggles, lc, cmp, deltas, heat, stats, remarks, evidence, tLabel: f(t, 2) };
+  }
+}
+</script>
+</body>
+</html>

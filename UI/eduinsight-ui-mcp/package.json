@@ -1,0 +1,14 @@
+{
+  "name": "eduinsight-ui-mcp",
+  "version": "1.0.0",
+  "description": "MCP server cung cấp design system 'Sticker lớp học' của EduInsight AI cho Claude Code, Cursor, Claude Desktop…",
+  "type": "module",
+  "bin": { "eduinsight-ui-mcp": "server.mjs" },
+  "main": "server.mjs",
+  "scripts": { "start": "node server.mjs", "test": "node test-client.mjs" },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.0",
+    "zod": "^3.23.8"
+  }
+}

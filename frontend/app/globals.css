@@ -1,0 +1,88 @@
+/* EduInsight · Sticker lớp học — Tailwind CSS v4 theme
+   Dán vào app/globals.css của Next.js 16 (thay nội dung mặc định).
+   Font nạp qua next/font trong app/layout.tsx (xem get_component "layout"). */
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #111111;
+  --color-paper: #FFF4D6;
+  --color-paper-dot: #E8D9AE;
+  --color-surface: #FFFFFF;
+  --color-surface-soft: #FFFBEF;
+  --color-table-head: #FFE9A8;
+  --color-line: #EADFC3;
+  --color-line-strong: #D9CBA3;
+  --color-muted: #5A5444;
+  --color-muted-strong: #3A3528;
+
+  --color-yellow: #FFD23F;
+  --color-cobalt: #2B59FF;
+  --color-cobalt-text: #1D3FCC;
+  --color-tomato: #FF5A36;
+  --color-mint: #3DDC97;
+  --color-pink: #FF8FC7;
+  --color-lilac: #B8A4FF;
+  --color-amber: #FFB020;
+
+  --color-positive: #3DDC97;
+  --color-positive-text: #0A7A4B;
+  --color-negative: #FF5A36;
+  --color-negative-text: #C2290F;
+  --color-warning: #FFE9A8;
+  --color-warning-text: #B54708;
+  --color-neutral: #F6EFD9;
+
+  --font-sans: var(--font-bricolage), system-ui, sans-serif;
+  --font-display: var(--font-bricolage), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+
+  --shadow-sticker: 5px 5px 0 #111111;
+  --shadow-btn: 3px 3px 0 #111111;
+  --shadow-selected: 4px 4px 0 #111111;
+}
+
+@layer base {
+  html { color: var(--color-ink); }
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background-color: var(--color-paper);
+    background-image: radial-gradient(var(--color-paper-dot) 1.2px, transparent 1.2px);
+    background-size: 22px 22px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--color-cobalt-text); }
+  a:hover { color: var(--color-ink); }
+  :focus-visible { outline: 3px solid var(--color-cobalt); outline-offset: 2px; }
+}
+
+@layer components {
+  /* Khối sticker: mọi card, panel, bảng, biểu đồ */
+  .sticker { background: var(--color-surface); border: 2.5px solid var(--color-ink); border-radius: var(--radius-xl); box-shadow: var(--shadow-sticker); }
+  /* Đường kẻ 2.5px chuẩn */
+  .ink-border { border: 2.5px solid var(--color-ink); }
+  /* Số liệu */
+  .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  /* Hiệu ứng bấm cho nút/sticker có thể tương tác */
+  .press { transition: transform 120ms, box-shadow 120ms; }
+  .press:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--color-ink); }
+  .press:active { transform: translate(2px, 2px); box-shadow: none; }
+  .bg-dots { background-color: var(--color-paper); background-image: radial-gradient(var(--color-paper-dot) 1.2px, transparent 1.2px); background-size: 22px 22px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .press, .press:hover, .press:active { transition: none; transform: none; }
+}
+
+/* In báo cáo: chỉ in vùng .print-area */
+@media print {
+  body { background: #FFFFFF !important; }
+  body * { visibility: hidden; }
+  .print-area, .print-area * { visibility: visible; }
+  .print-area { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none !important; }
+}

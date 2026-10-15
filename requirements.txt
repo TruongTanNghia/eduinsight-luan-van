@@ -1,0 +1,13 @@
+numpy
+pandas
+xlrd>=2.0
+scikit-learn
+scipy
+torch
+xgboost
+pytorch-tabnet
+tabpfn
+scikit-posthocs
+streamlit
+plotly
+requests

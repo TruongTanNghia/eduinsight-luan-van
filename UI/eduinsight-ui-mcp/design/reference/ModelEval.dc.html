@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>EduInsight AI — Đánh giá mô hình</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap">
+<style>
+body{margin:0;background:#FFF8E6;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#111111}
+a{color:#2B59FF}a:hover{color:#2537C9}
+.ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nav{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;color:#CBC7F7;text-decoration:none;font-size:14px;min-height:44px;box-sizing:border-box}
+.nav:hover{background:rgba(255,255,255,.12);color:#FFFFFF}
+.nav.on{background:linear-gradient(90deg,rgba(255,255,255,.24),rgba(255,255,255,.08));box-shadow:0 8px 20px -8px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.18);color:#FFFFFF;font-weight:600}
+.card{background:rgba(255,255,255,.92);border:1px solid #ECE8FB;border-radius:16px;padding:20px;box-sizing:border-box;min-width:0;box-shadow:0 1px 2px rgba(76,29,149,.05),0 12px 32px -16px rgba(109,40,217,.28)}
+h1{background:linear-gradient(90deg,#4C1D95 0%,#C026D3 55%,#F97316 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+polyline{filter:drop-shadow(0 4px 5px rgba(109,40,217,.28))}
+.h2{margin:0;font-size:15px;font-weight:600;color:#111111}
+.sub{margin:4px 0 0;font-size:12.5px;color:#5A5444;line-height:1.5}
+.num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.fl{display:flex;flex-direction:column;gap:4px;font-size:12px;color:#5A5444;font-weight:500}
+.sel{height:44px;border:1px solid #D9CBA3;border-radius:8px;background:#FFFFFF;padding:0 12px;font:inherit;font-size:13.5px;color:#111111;min-width:120px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.tb{width:100%;border-collapse:collapse;font-size:13.5px}
+.tb th{text-align:left;font-size:12px;font-weight:600;color:#5A5444;padding:10px 12px;border-bottom:1px solid #EADFC3;white-space:nowrap;background:#FFFBEF}
+.tb td{padding:11px 12px;border-bottom:1px solid #F6EFD9;vertical-align:middle;white-space:nowrap}
+.ax{font-size:11px;fill:#5A5444;font-family:'IBM Plex Mono',monospace}
+.grid{stroke:#EFE5C9;stroke-width:1}
+.lg{display:flex;align-items:center;gap:6px;font-size:12px;color:#3A3528}
+.sw{width:10px;height:10px;border-radius:3px;flex:none}
+.kv{display:flex;flex-direction:column;gap:3px;min-width:0}
+.kv span:first-child{font-size:11.5px;color:#5A5444;font-weight:500}
+.kv span:last-child{font-size:13.5px;font-weight:500;overflow-wrap:anywhere}
+
+body{font-family:'Bricolage Grotesque',system-ui,sans-serif !important;color:#111111;background:#FFF4D6}
+a{color:#1D3FCC}a:hover{color:#111111}
+.num,.mono,.ax{font-family:'JetBrains Mono',ui-monospace,monospace !important}
+.card{background:#FFFFFF !important;border:2.5px solid #111111 !important;border-radius:18px !important;box-shadow:5px 5px 0 #111111 !important}
+h1{background:none !important;-webkit-background-clip:border-box !important;background-clip:border-box !important;color:#111111 !important;font-weight:800 !important;letter-spacing:-.03em !important}
+.h2{font-weight:800 !important;font-size:18px;letter-spacing:-.01em;color:#111111}
+.sub{color:#4A4436}
+.chip{border:2px solid #111111}
+.sel,.fsel{border:2.5px solid #111111 !important;border-radius:12px !important;font-weight:600}
+.tb th{background:#FFE9A8 !important;color:#111111 !important;border-bottom:2.5px solid #111111 !important}
+.tb td{border-bottom:1.5px solid #EADFC3 !important}
+polyline{filter:none !important}
+.tog{border:2.5px solid #111111 !important;font-weight:700;color:#111111}
+.tog.on{background:#2B59FF !important;color:#FFFFFF !important;box-shadow:3px 3px 0 #111111 !important}
+.seg,.opt{border:2.5px solid #111111 !important;box-shadow:none}
+.seg.on,.opt.on{background:#FFD23F !important;border-color:#111111 !important;box-shadow:4px 4px 0 #111111 !important}
+.pg{border:2.5px solid #111111 !important;font-weight:700}
+.pg.on{background:#111111 !important;color:#FFD23F !important}
+.segc{background:#FFFFFF !important;border:2.5px solid #111111}
+.segc button.on{background:#2B59FF !important;color:#FFFFFF !important;box-shadow:none !important}
+.btn{border:2.5px solid #111111 !important;border-radius:12px !important;font-weight:800 !important;box-shadow:3px 3px 0 #111111 !important}
+.stat,.blk{border:2.5px solid #111111 !important;border-radius:14px !important}
+.rowb.on{background:#FFD23F !important}
+.clr{border:2.5px solid #111111 !important;font-weight:700}
+.k{color:#111111 !important;font-weight:600 !important}
+.pillnav{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:2.5px solid #111111;border-radius:999px;background:#FFFFFF;font-weight:700;font-size:14px;text-decoration:none;color:#111111;box-sizing:border-box}
+.pillnav:hover{color:#111111;box-shadow:3px 3px 0 #111111}
+.pillnav.on{background:#2B59FF;color:#FFFFFF;box-shadow:3px 3px 0 #111111}
+</style>
+</helmet>
+<div style="min-height: 100vh; background-color: #FFF4D6; background-image: radial-gradient(#E8D9AE 1.2px, transparent 1.2px); background-size: 22px 22px; display: flex; flex-direction: column">
+<header style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; padding: 22px 32px 0; max-width: 1400px; width: 100%; margin: 0 auto; box-sizing: border-box">
+<div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap">
+<a href="Main.dc.html" style="display: inline-block; background: #111111; color: #FFD23F; font-weight: 800; font-size: 22px; padding: 7px 14px; border-radius: 12px; transform: rotate(-2.5deg); letter-spacing: -0.02em; text-decoration: none">EduInsight<span style="color: #FF5A36">!</span></a>
+<nav aria-label="Điều hướng chính" style="display: flex; gap: 8px; flex-wrap: wrap"><a class="pillnav" href="Main.dc.html">Tổng quan</a><a class="pillnav" href="Students.dc.html">Học sinh</a><a class="pillnav" href="ClassAnalysis.dc.html">Lớp học</a><a class="pillnav" href="Prediction.dc.html">Dự đoán</a><a class="pillnav on" href="ModelEval.dc.html" aria-current="page">Mô hình</a><a class="pillnav" href="Reports.dc.html">Báo cáo</a><a class="pillnav" href="DataManagement.dc.html">Dữ liệu</a></nav>
+</div>
+<span aria-label="Tài khoản giáo viên" style="width: 46px; height: 46px; border-radius: 50%; border: 2.5px solid #111111; background: #FF8FC7; display: flex; align-items: center; justify-content: center; font-weight: 800">GV</span>
+</header>
+<main style="width: 100%; max-width: 1400px; margin: 0 auto; min-width: 0; padding: 28px 32px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
+
+<header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+<h1 style="margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.01em">Đánh giá mô hình</h1>
+<span class="chip" style="background: #FFB020; color: #FFFFFF">DEMO · số liệu bố cục</span>
+</div>
+<p style="margin: 0; font-size: 13.5px; color: #5A5444; max-width: 90ch">Khi triển khai, mọi chỉ số trên trang được đọc từ báo cáo đánh giá đã lưu cùng checkpoint. Chỉ số nào không phù hợp với nhãn sẽ bị ẩn kèm lý do.</p>
+</div>
+<label class="fl">Mô hình<select class="sel" style="min-width: 260px"><option>EduSeq-Transformer · v0.3.0</option><option>EduSeq-Transformer · v0.2.1</option></select></label>
+</header>
+
+<section class="card" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 18px 24px">
+<div class="kv"><span>Bài toán</span><span>Dự báo mức kết quả kỳ kế tiếp · 4 lớp</span></div>
+<div class="kv"><span>Phiên bản</span><span class="num">v0.3.0 · cfg a41f9c2</span></div>
+<div class="kv"><span>Thời gian huấn luyện</span><span class="num">[dd/mm/yyyy hh:mm] · 3 phút 12 giây</span></div>
+<div class="kv"><span>Phiên bản dữ liệu</span><span class="num">ds-2026.09.1</span></div>
+<div class="kv"><span>Seed</span><span class="num">42</span></div>
+<div class="kv"><span>Checkpoint</span><span class="num" style="font-size: 12.5px">artifacts/models/eduseq-v0.3.0/model.pt</span></div>
+<div class="kv"><span>Tiêu chí chọn mô hình</span><span>Macro F1 trên tập validation</span></div>
+<div class="kv"><span>Thời gian suy luận</span><span class="num">1,8 ms / học sinh (CPU)</span></div>
+</section>
+
+<section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 16px">
+
+<div class="card" style="display: flex; flex-direction: column; gap: 14px">
+<div><h2 class="h2">Chia dữ liệu</h2><p class="sub">Chia theo học sinh, phân tầng theo nhãn. Một học sinh chỉ thuộc một tập. Tập test không tham gia chọn mô hình.</p></div>
+<div style="display: flex; height: 30px; border-radius: 6px; overflow: hidden" role="img" aria-label="Train 288, validation 62, test 62 học sinh">
+<span class="num" style="width: 69.9%; background: #2B59FF; color: #FFFFFF; display: flex; align-items: center; padding-left: 10px; font-size: 12px; font-weight: 600">Train 288</span>
+<span class="num" style="width: 15.05%; background: #FF8FC7; color: #111111; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">Val 62</span>
+<span class="num" style="width: 15.05%; background: #FF5A36; color: #111111; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">Test 62</span>
+</div>
+<div style="overflow-x: auto">
+<table class="tb">
+<thead><tr><th>Phân bố nhãn</th><th style="text-align: right">Tốt</th><th style="text-align: right">Khá</th><th style="text-align: right">Đạt</th><th style="text-align: right">Chưa đạt</th></tr></thead>
+<tbody>
+<sc-for list="{{labels}}" as="l"><tr><td style="font-weight: 500">{{l.split}}</td><sc-for list="{{l.n}}" as="n"><td class="num" style="text-align: right">{{n}}</td></sc-for></tr></sc-for>
+</tbody>
+</table>
+</div>
+<p class="sub" style="margin: 0">Lớp “Chưa đạt” rất ít mẫu (3 trong test): chỉ số của lớp này có độ bất định cao.</p>
+</div>
+
+<div class="card" style="display: flex; flex-direction: column; gap: 14px">
+<div><h2 class="h2">Đặc trưng đầu vào</h2><p class="sub">Chuỗi 3 học kỳ trước kỳ cần dự báo · không dùng điểm của kỳ mục tiêu</p></div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<sc-for list="{{feats}}" as="x"><span class="chip num" style="background: #FFF8E6; color: #111111; font-weight: 500; padding: 6px 12px">{{x}}</span></sc-for>
+</div>
+<div style="padding: 14px; border-radius: 10px; background: #111111; color: #FFD23F; font-size: 12px; line-height: 1.7; overflow-x: auto" class="num">
+<div style="white-space: pre">model: transformer_encoder
+d_model: 64   n_heads: 4   n_layers: 2
+dropout: 0.2  lr: 3e-4     batch: 32
+max_epochs: 60  early_stop: patience 8
+seed: 42      split: by_student (70/15/15)</div>
+</div>
+</div>
+
+</section>
+
+<section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(520px, 100%), 1fr)); gap: 16px">
+
+<div class="card">
+<div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px">
+<div><h2 class="h2">Loss theo epoch</h2><p class="sub">Cross-entropy · dừng sớm tại epoch 27 (checkpoint tốt nhất theo validation)</p></div>
+<div style="display: flex; gap: 12px"><span class="lg"><span class="sw" style="background: #2B59FF"></span>Train</span><span class="lg"><span class="sw" style="background: #FFB020"></span>Validation</span></div>
+</div>
+<svg viewBox="0 0 600 260" style="width: 100%; height: auto; margin-top: 12px" role="img" aria-label="Loss train giảm đều; loss validation chững lại sau khoảng epoch 25">
+<sc-for list="{{loss.grid}}" as="g"><line class="grid" x1="44" x2="584" y1="{{g.y}}" y2="{{g.y}}"></line><text class="ax" x="36" y="{{g.ty}}" style="text-anchor: end">{{g.label}}</text></sc-for>
+<sc-for list="{{loss.xs}}" as="x"><text class="ax" x="{{x.x}}" y="252" style="text-anchor: middle">{{x.label}}</text></sc-for>
+<line x1="{{loss.stopX}}" x2="{{loss.stopX}}" y1="12" y2="230" stroke="#5A5444" style="stroke-dasharray: 4 4"></line>
+<text class="ax" x="{{loss.stopLx}}" y="22" style="fill: #111111">dừng sớm · epoch 27</text>
+<polyline points="{{loss.tr}}" fill="none" stroke="#2B59FF" style="stroke-width: 2.5"></polyline>
+<polyline points="{{loss.va}}" fill="none" stroke="#FFB020" style="stroke-width: 2.5"></polyline>
+</svg>
+</div>
+
+<div class="card">
+<div><h2 class="h2">Confusion matrix · tập test</h2><p class="sub">Hàng: nhãn thật · cột: dự báo · n = 62 học sinh</p></div>
+<div style="overflow-x: auto; margin-top: 14px">
+<div style="display: grid; grid-template-columns: 84px repeat(4, minmax(64px, 1fr)); gap: 4px; min-width: 380px">
+<span></span><sc-for list="{{cm.head}}" as="h"><span style="font-size: 11.5px; color: #5A5444; text-align: center; padding-bottom: 4px">{{h}}</span></sc-for>
+<sc-for list="{{cm.rows}}" as="r">
+<span style="font-size: 12.5px; font-weight: 500; display: flex; align-items: center">{{r.name}}</span>
+<sc-for list="{{r.cells}}" as="c"><span class="num" title="{{c.tip}}" style="height: 52px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; background: {{c.bg}}; color: {{c.fg}}; outline: {{c.ring}}; outline-offset: -2px">{{c.n}}</span></sc-for>
+</sc-for>
+</div>
+</div>
+<p class="sub" style="margin-top: 12px">Viền đậm: dự báo đúng. Phần lớn lỗi nằm giữa hai mức liền kề (Tốt ↔ Khá, Khá ↔ Đạt).</p>
+</div>
+
+</section>
+
+<section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 16px">
+<div class="card" style="padding: 0">
+<div style="padding: 18px 20px 10px"><h2 class="h2">Chỉ số theo lớp · Transformer</h2><p class="sub">Tính từ confusion matrix bên trên</p></div>
+<div style="overflow-x: auto">
+<table class="tb">
+<thead><tr><th>Lớp</th><th style="text-align: right">Precision</th><th style="text-align: right">Recall</th><th style="text-align: right">F1</th><th style="text-align: right">Support</th></tr></thead>
+<tbody>
+<sc-for list="{{per}}" as="p"><tr><td style="font-weight: 500">{{p.name}}</td><td class="num" style="text-align: right">{{p.p}}</td><td class="num" style="text-align: right">{{p.r}}</td><td class="num" style="text-align: right; font-weight: 600">{{p.f}}</td><td class="num" style="text-align: right; color: #5A5444">{{p.s}}</td></tr></sc-for>
+<tr style="background: #FFFBEF"><td style="font-weight: 700">Macro trung bình</td><td class="num" style="text-align: right">{{macro.p}}</td><td class="num" style="text-align: right">{{macro.r}}</td><td class="num" style="text-align: right; font-weight: 700">{{macro.f}}</td><td class="num" style="text-align: right; color: #5A5444">62</td></tr>
+<tr><td style="font-weight: 500">Accuracy</td><td></td><td></td><td class="num" style="text-align: right; font-weight: 600">{{acc}}</td><td></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="card" style="padding: 0">
+<div style="padding: 18px 20px 10px"><h2 class="h2">So sánh Transformer với baseline</h2><p class="sub">Cùng tập test · khoảng tin cậy 95% bằng bootstrap 1.000 lần</p></div>
+<div style="overflow-x: auto">
+<table class="tb">
+<thead><tr><th>Mô hình</th><th style="text-align: right">Macro F1</th><th style="text-align: right">ROC-AUC (OvR)</th><th style="text-align: right">PR-AUC</th><th style="text-align: right">ECE</th><th style="text-align: right">Suy luận</th></tr></thead>
+<tbody>
+<sc-for list="{{cmp}}" as="c"><tr style="background: {{c.bg}}"><td style="font-weight: {{c.w}}">{{c.name}}</td><td class="num" style="text-align: right">{{c.f1}}</td><td class="num" style="text-align: right">{{c.roc}}</td><td class="num" style="text-align: right">{{c.pr}}</td><td class="num" style="text-align: right">{{c.ece}}</td><td class="num" style="text-align: right; color: #5A5444">{{c.t}}</td></tr></sc-for>
+</tbody>
+</table>
+</div>
+<div style="margin: 14px 20px 20px; padding: 14px; border-radius: 10px; background: #FFFAEB; border: 1px solid #FEC84B; font-size: 13px; line-height: 1.6; color: #3A3528">
+<strong style="color: #B54708">Kết luận thận trọng:</strong> khoảng tin cậy của Transformer (0,61–0,81) chồng lên Random Forest (0,59–0,80). Với 412 học sinh, chưa đủ bằng chứng để nói Transformer tốt hơn baseline. Nhãn của bài toán này lấy từ điểm kỳ sau, nên không phải bằng chứng về khả năng dự đoán tuyển sinh.
+</div>
+</div>
+</section>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2150}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const f = (v, d) => v.toFixed(d == null ? 2 : d).replace('.', ',');
+    const names = ['Tốt', 'Khá', 'Đạt', 'Chưa đạt'];
+    const M = [[10, 4, 0, 0], [3, 19, 4, 0], [0, 4, 14, 1], [0, 0, 1, 2]];
+    const rowS = M.map((r) => r.reduce((a, b) => a + b, 0));
+    const colS = [0, 1, 2, 3].map((j) => M.reduce((a, r) => a + r[j], 0));
+    const cm = { head: names, rows: M.map((r, i) => ({ name: names[i], cells: r.map((n, j) => { const k = n / rowS[i]; const L = Math.round(97 - k * 62); return { n, bg: 'hsl(226, 100%, ' + L + '%)', fg: L < 60 ? '#FFFFFF' : '#111111', ring: i === j ? '2px solid #111111' : '0', tip: 'Thật ' + names[i] + ' → dự báo ' + names[j] + ': ' + n }; }) })) };
+    const per = names.map((n, i) => { const p = M[i][i] / colS[i], r = M[i][i] / rowS[i]; const F = 2 * p * r / (p + r); return { name: n, p: f(p), r: f(r), f: f(F), s: rowS[i], P: p, R: r, F }; });
+    const macro = { p: f(per.reduce((a, b) => a + b.P, 0) / 4), r: f(per.reduce((a, b) => a + b.R, 0) / 4), f: f(per.reduce((a, b) => a + b.F, 0) / 4) };
+    const acc = f(M.reduce((a, r, i) => a + r[i], 0) / 62);
+    const labels = [{ split: 'Train (288)', n: [66, 118, 90, 14] }, { split: 'Validation (62)', n: [14, 26, 19, 3] }, { split: 'Test (62)', n: [14, 26, 19, 3] }];
+    const feats = ['score[8 môn] × 3 kỳ', 'avg_semester', 'delta_prev', 'std_4k', 'missing_mask', 'semester_position'];
+    const W = 600, H = 260, L = 44, R = 16, T = 12, B = 30, E = 40, mn = 0.3, mx = 1.8;
+    const X = (e) => +(L + (W - L - R) * (e - 1) / (E - 1)).toFixed(1);
+    const Y = (v) => +(T + (H - T - B) * (1 - (v - mn) / (mx - mn))).toFixed(1);
+    const tr = [], va = [];
+    for (let e = 1; e <= E; e++) { tr.push(X(e) + ',' + Y(1.32 * Math.exp(-e / 9) + 0.40)); va.push(X(e) + ',' + Y(1.22 * Math.exp(-e / 9.5) + 0.58 + 0.0035 * Math.pow(Math.max(0, e - 27), 1.4))); }
+    const loss = { tr: tr.join(' '), va: va.join(' '), stopX: X(27), stopLx: X(27) + 6, grid: [0.3, 0.6, 0.9, 1.2, 1.5, 1.8].map((v) => ({ y: Y(v), ty: Y(v) + 4, label: f(v, 1) })), xs: [1, 10, 20, 27, 30, 40].map((e) => ({ x: X(e), label: String(e) })) };
+    const cmp = [
+      { name: 'Lớp đa số (tham chiếu)', f1: '0,15', roc: '0,50', pr: '0,25', ece: '—', t: '—', bg: 'transparent', w: 500 },
+      { name: 'Logistic Regression', f1: '0,68 (0,57–0,78)', roc: '0,86', pr: '0,69', ece: '0,05', t: '0,02 ms', bg: 'transparent', w: 500 },
+      { name: 'Random Forest', f1: '0,70 (0,59–0,80)', roc: '0,87', pr: '0,71', ece: '0,08', t: '0,4 ms', bg: 'transparent', w: 500 },
+      { name: 'Transformer v0.3.0', f1: macro.f + ' (0,61–0,81)', roc: '0,88', pr: '0,73', ece: '0,07', t: '1,8 ms', bg: '#EEF3FF', w: 700 }
+    ];
+    return { cm, per, macro, acc, labels, feats, loss, cmp };
+  }
+}
+</script>
+</body>
+</html>
