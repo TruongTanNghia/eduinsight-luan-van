@@ -92,7 +92,8 @@ class Store:
         self.df_all = load()                              # mọi kỳ (đầu vào mô hình)
         self.df = load_yearly(self.df_all)                # cả năm (phân tích, báo cáo)
         self.df["dtb"] = self.df[SUBJECTS].mean(axis=1)
-        self.names = pd.read_csv(PRIVATE_MAP).set_index("sid")["ho_ten"].to_dict() if os.path.exists(PRIVATE_MAP) else {}
+        hide = os.environ.get("E3M_HIDE_NAMES") == "1"           # chế độ ẩn danh khi trình chiếu / chụp màn hình
+        self.names = pd.read_csv(PRIVATE_MAP).set_index("sid")["ho_ten"].to_dict() if os.path.exists(PRIVATE_MAP) and not hide else {}
         self.X, self.M, self.C, self.sids, self.info, self.panel_periods = to_panel(self.df_all)
         self.sid_index = {s: i for i, s in enumerate(self.sids)}
         self.year_of = self.df.groupby("lop_so")["nam_hoc"].first().to_dict()

@@ -1,13 +1,22 @@
+# ---- Lõi dữ liệu và học máy
 numpy
 pandas
 xlrd>=2.0
 scikit-learn
 scipy
-torch
+torch                 # cài bản CUDA từ pytorch.org nếu có GPU NVIDIA
 xgboost
 pytorch-tabnet
-tabpfn
+tabpfn==2.0.9         # bản trọng số mở; bản mới hơn bắt đăng nhập tài khoản Prior Labs
 scikit-posthocs
+matplotlib            # biểu đồ trong README (experiments/make_figures.py)
+
+# ---- Web API (EduInsight)
+fastapi
+uvicorn
+python-multipart
+
+# ---- Bản Streamlit và LLM cục bộ
 streamlit
 plotly
 requests

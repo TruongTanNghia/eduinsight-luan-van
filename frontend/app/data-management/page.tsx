@@ -60,9 +60,9 @@ export default function DataManagementPage() {
             className={`flex flex-col items-center gap-2.5 rounded-lg border-[2.5px] border-dashed border-cobalt px-5 py-7 text-center ${drag ? "bg-yellow" : "bg-surface-soft"}`}>
             <Upload aria-hidden="true" className="size-[30px] text-cobalt" strokeWidth={2.5} />
             <strong className="text-[15px]">Kéo thả tệp sổ điểm Excel vào đây</strong>
-            <span className="text-[12.5px] font-medium text-muted">.xls, .xlsx xuất từ phần mềm sổ điểm · tối đa 20 MB · tên tệp dạng “KHOI 7-23-24.xls” · công thức trong ô được đọc như văn bản, không thực thi</span>
+            <span className="text-[12.5px] font-medium text-muted">.xls, .xlsx xuất từ phần mềm sổ điểm · tối đa 20 MB · tên tệp dạng “KHOI 7 HK1 23-24.xls” · công thức trong ô được đọc như văn bản, không thực thi</span>
             <label className="press inline-flex min-h-11 cursor-pointer items-center justify-center rounded-md border-[2.5px] border-ink bg-white px-4 text-sm font-extrabold shadow-btn">Chọn tệp<input ref={inputRef} type="file" accept=".xls,.xlsx" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); }} /></label>
-            <span className="text-[12.5px] font-bold">Mẫu đúng cấu trúc: 4 tệp trong data/raw/</span>
+            <span className="text-[12.5px] font-bold">Mẫu đúng cấu trúc: các sổ HK1, HK2, Cả năm trong data/raw/</span>
           </div>
           <div className="flex flex-col gap-3 rounded-lg border-[2.5px] border-ink p-4">
             {busy === "preview" && <LoadingSticker lines={2} title="Đang đọc tệp…" />}
