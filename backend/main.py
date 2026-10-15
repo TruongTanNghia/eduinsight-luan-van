@@ -164,6 +164,14 @@ def ai_models():
     return {"items": store.models_list(), "llm": llm.available_models(), "status": "awaiting_labels"}
 
 
+@app.get(f"{V}/ai/accuracy")
+def ai_accuracy(model: str = "XEdu-KANFormer"):
+    r = store.accuracy(model)
+    if r is None:
+        raise HTTPException(404, "Chưa có dự đoán kiểm định chéo cho mô hình này (chạy scripts/train.bat)")
+    return r
+
+
 @app.get(f"{V}/ai/models/{{mid}}/metrics")
 def ai_model_metrics(mid: str):
     r = store.model_metrics(mid)

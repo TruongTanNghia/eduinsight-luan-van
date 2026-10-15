@@ -471,6 +471,7 @@ class Store:
             "inputPeriods": list(w.periods),
             "attention": None if att is None else [{"feature": f, **{c: r2(v) for c, v in r.items()}} for f, r in att.iterrows()],
             "intervalNote": "Khoảng 90% split conformal, hiệu chỉnh trên 15% học sinh không dùng để huấn luyện.",
+            "check": self.student_check(sid, name),
         }
 
     def message(self, sid, audience, model=None, use_llm=True, floor=None, margin=1.5, school=None):
@@ -483,6 +484,100 @@ class Store:
             return {"text": text, "issues": issues, "source": model}
         text = llm.template(facts, audience)
         return {"text": text, "issues": llm.check(text, facts, audience), "source": "mẫu theo luật"}
+
+    # ---- dự đoán so với thực tế (dùng dự đoán kiểm định chéo: mô hình chưa thấy điểm lớp 9 của học sinh đó)
+    def _oof(self, model):
+        path = os.path.join(ROOT, "reports", "predictions.csv")
+        key = (model, os.path.getmtime(path) if os.path.exists(path) else 0)
+        cache = getattr(self, "_oof_cache", {})
+        if key in cache:
+            return cache[key]
+        if not os.path.exists(path):
+            return None
+        p = pd.read_csv(path)
+        p = p[(p["model"] == model) & p["run"].astype(str).str.startswith("cv")]
+        if p.empty:
+            return None
+        oof = p.groupby("sid")[[f"pred_{x}" for x in SUBJECTS]].mean()
+        oof.columns = SUBJECTS
+        cache[key] = oof
+        self._oof_cache = cache
+        return oof
+
+    def _actual9(self):
+        a = {}
+        for k in ("L9H1", "L9H2", "L9"):
+            if k in self.PK:
+                a[k] = self.rows(k).drop_duplicates("sid").set_index("sid")
+        return a
+
+    def student_check(self, sid, model):
+        oof = self._oof(model)
+        a = self._actual9()
+        if oof is None or sid not in oof.index or "L9" not in a or sid not in a["L9"].index:
+            return None
+        cn_pred = oof.loc[sid]
+        h1 = a["L9H1"].loc[sid] if "L9H1" in a and sid in a["L9H1"].index else None
+        h2 = a["L9H2"].loc[sid] if "L9H2" in a and sid in a["L9H2"].index else None
+        cn = a["L9"].loc[sid]
+        rows = []
+        for s in SUBJECTS:
+            hk1 = r2(h1[s]) if h1 is not None else None
+            hk2 = r2(h2[s]) if h2 is not None else None
+            cnp = float(cn_pred[s])
+            hk2p = r2(min(10, max(0, (3 * cnp - hk1) / 2))) if hk1 is not None else None
+            cn_calc = r2((hk1 + 2 * hk2) / 3) if hk1 is not None and hk2 is not None else None
+            rows.append({"key": s, "name": SUBJECT_VN[s], "short": SHORT[s], "hk1": hk1, "hk2Pred": hk2p, "hk2": hk2,
+                         "cnPred": r2(cnp), "cn": r2(cn[s]), "cnCalc": cn_calc, "errCn": r2(cnp - cn[s]),
+                         "errHk2": r2(hk2p - hk2) if hk2p is not None and hk2 is not None else None})
+        lv_pred = LEVEL_KEY[advisor.level_tt22({s: float(cn_pred[s]) for s in SUBJECTS})]
+        return {"model": model, "rows": rows, "levelPred": lv_pred, "levelActual": LEVEL_KEY[int(cn["muc"])],
+                "levelMatch": lv_pred == LEVEL_KEY[int(cn["muc"])],
+                "maeCn": r2(np.mean([abs(r["errCn"]) for r in rows])),
+                "maeHk2": r2(np.mean([abs(r["errHk2"]) for r in rows if r["errHk2"] is not None])) if h1 is not None and h2 is not None else None}
+
+    def accuracy(self, model):
+        oof = self._oof(model)
+        a = self._actual9()
+        if oof is None or "L9" not in a:
+            return None
+        ids = [i for i in oof.index if i in a["L9"].index]
+        cn = a["L9"].loc[ids, SUBJECTS]
+        pred = oof.loc[ids, SUBJECTS]
+        err_cn = (pred - cn)
+        has_sem = "L9H1" in a and "L9H2" in a
+        if has_sem:
+            ids2 = [i for i in ids if i in a["L9H1"].index and i in a["L9H2"].index]
+            h1 = a["L9H1"].loc[ids2, SUBJECTS]
+            h2 = a["L9H2"].loc[ids2, SUBJECTS]
+            hk2_pred = ((3 * pred.loc[ids2] - h1) / 2).clip(0, 10)
+            err_hk2 = hk2_pred - h2
+            calc = ((h1 + 2 * h2) / 3).round(1)
+            formula_match = float(((calc - cn.loc[ids2]).abs() < 0.051).to_numpy().mean() * 100)
+        def stats(e):
+            v = e.abs().to_numpy().ravel()
+            v = v[~np.isnan(v)]
+            return {"mae": r2(v.mean()), "rmse": r2(np.sqrt((v ** 2).mean())), "w025": r2((v <= 0.25).mean() * 100),
+                    "w05": r2((v <= 0.5).mean() * 100), "w10": r2((v <= 1.0).mean() * 100), "n": int(len(v))}
+        per_subject = []
+        for s in SUBJECTS:
+            row = {"key": s, "name": SUBJECT_VN[s], "short": SHORT[s], "cn": stats(err_cn[s])}
+            if has_sem:
+                row["hk2"] = stats(err_hk2[s])
+            per_subject.append(row)
+        lv_pred = [LEVEL_KEY[advisor.level_tt22({s: float(pred.loc[i, s]) for s in SUBJECTS})] for i in ids]
+        lv_act = [LEVEL_KEY[int(a["L9"].loc[i, "muc"])] for i in ids]
+        names = ["Tốt", "Khá", "Đạt", "Chưa đạt"]
+        conf = [[sum(1 for p_, a_ in zip(lv_pred, lv_act) if a_ == ra and p_ == pc) for pc in names] for ra in names]
+        exam_err = (pred[EXAM].sum(axis=1) - cn[EXAM].sum(axis=1)).abs()
+        dtb_err = (pred.mean(axis=1) - cn.mean(axis=1)).abs()
+        return {"model": model, "n": len(ids), "method": "Kiểm định chéo 5 lần theo lớp × 3 hạt giống: mỗi học sinh được dự đoán bởi mô hình chưa thấy điểm lớp 9 của em đó (trung bình 3 lần dự đoán).",
+                "inputs": "HK1 lớp 6 → HK1 lớp 9" if self.SEM else "Cả năm lớp 6 → lớp 8",
+                "cn": stats(err_cn), "hk2": stats(err_hk2) if has_sem else None, "formulaMatch": r2(formula_match) if has_sem else None,
+                "dtb": {"mae": r2(dtb_err.mean()), "w025": r2((dtb_err <= 0.25).mean() * 100), "w05": r2((dtb_err <= 0.5).mean() * 100)},
+                "exam": {"mae": r2(exam_err.mean()), "w05": r2((exam_err <= 0.5).mean() * 100), "w10": r2((exam_err <= 1.0).mean() * 100)},
+                "level": {"match": r2(100 * np.mean([p_ == a_ for p_, a_ in zip(lv_pred, lv_act)])), "names": names, "confusion": conf},
+                "perSubject": per_subject}
 
     # ---- mô hình
     def models_list(self):

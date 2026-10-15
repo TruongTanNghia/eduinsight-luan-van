@@ -12,7 +12,7 @@ import { EmptySticker, ErrorSticker, LoadingSticker } from "@/components/ui/stat
 import { Sticker, StickerHeader } from "@/components/ui/sticker";
 import { Tag } from "@/components/ui/tag";
 import { apiSend, useApi, useMeta } from "@/lib/api";
-import { fmt, LEVEL_TONE, sgn } from "@/lib/format";
+import { fmt, LEVEL_TONE, pct, sgn } from "@/lib/format";
 
 type Pred = {
   id: string; available: boolean; reason?: string; model: string; models: string[]; latestGrade: number; latestLabel?: string;
@@ -22,7 +22,14 @@ type Pred = {
     diem_sang: { mon: string; diem: number; lop: number }[]; muc_tieu_tiep_theo?: { muc: string; kha_thi: boolean; can_cu: string; can_cai_thien: { mon: string; tu: number; len: number }[] };
     tuyen_sinh_lop_10: { diem_san: number; tong_3_mon: number; chenh_lech: number; nhan_dinh: string; khoang_tong_3_mon_90?: [number, number] }; xu_huong?: Record<string, { xu_huong: string; thay_doi: number }> };
   occlusion: ({ feature: string; period: string } & Record<string, number>)[]; attention: ({ feature: string } & Record<string, number | null>)[] | null; inputPeriods: string[];
+  check: Check | null;
 };
+type Check = { model: string; levelPred: string; levelActual: string; levelMatch: boolean; maeCn: number; maeHk2: number | null;
+  rows: { key: string; name: string; short: string; hk1: number | null; hk2Pred: number | null; hk2: number | null; cnPred: number; cn: number; errCn: number; errHk2: number | null }[] };
+type St = { mae: number; rmse: number; w025: number; w05: number; w10: number; n: number };
+type Acc = { model: string; n: number; method: string; inputs: string; cn: St; hk2: St | null; formulaMatch: number | null;
+  dtb: { mae: number; w025: number; w05: number }; exam: { mae: number; w05: number; w10: number };
+  level: { match: number; names: string[]; confusion: number[][] }; perSubject: { key: string; name: string; short: string; cn: St; hk2?: St }[] };
 type School = { id: string; name: string; year: string; method: string; cut: number; type: string; source: string };
 type Student = { id: string; name: string; class: string };
 type Models = { items: { id: string; name: string; served: boolean; rmse: number; proposed: boolean; best: boolean }[]; llm: string[]; status: string };
@@ -84,6 +91,7 @@ function Predictions() {
       {pred.loading && !pred.data && <LoadingSticker lines={5} title="Đang tính dự đoán…" />}
       {pred.data && !pred.data.available && <EmptySticker title="Chưa dự đoán được" description={pred.data.reason} />}
       {pred.data?.available && chosen && <Body p={pred.data} student={chosen} schools={schools} llms={models.data?.llm ?? []} />}
+      <AccuracyBlock key={model} initial={model} models={(models.data?.items ?? []).map((m) => m.id)} />
     </>
   );
 }
@@ -131,6 +139,8 @@ function Body({ p, student, schools, llms }: { p: Pred; student: Student; school
         </Sticker>
       </section>
 
+      {p.check && <CheckBlock c={p.check} name={student.name} />}
+
       <Sticker className="flex flex-col gap-4">
         <div className="flex flex-wrap items-start justify-between gap-2.5">
           <StickerHeader title="Ba môn thi và điểm sàn trường THPT" description="Điểm chuẩn do nhà trường nhập kèm nguồn. Hệ thống không tự điền điểm chuẩn." />
@@ -163,6 +173,100 @@ function Body({ p, student, schools, llms }: { p: Pred; student: Student; school
       <Paths f={f} />
       <MessageBlock sid={p.id} llms={llms} />
     </>
+  );
+}
+
+const errCls = (e: number | null) => (e === null ? "text-muted" : Math.abs(e) <= 0.5 ? "text-positive-text" : Math.abs(e) <= 1 ? "text-warning-text" : "text-negative-text");
+const TH = "whitespace-nowrap border-b-[2.5px] border-ink bg-table-head px-3 py-2.5 text-xs font-bold";
+const TD = "num border-b-[1.5px] border-line px-3 py-2 text-right";
+
+function CheckBlock({ c, name }: { c: Check; name: string }) {
+  const hasSem = c.maeHk2 !== null;
+  const near = c.rows.filter((r) => Math.abs(r.errCn) <= 0.5).length;
+  return (
+    <Sticker className="flex flex-col gap-4">
+      <StickerHeader title={`Dự đoán so với điểm thật của ${name}`} description={`Mô hình ${c.model} dự đoán khi chưa thấy điểm lớp 9 của học sinh này (kiểm định chéo). Cả năm thật = (HK1 + 2 × HK2) / 3 theo Thông tư 22; HK2 dự đoán = (3 × Cả năm dự đoán − HK1 thật) / 2.`}
+        action={<Tag tone={c.levelMatch ? "mint" : "tomato"}>{c.levelMatch ? "Mức TT22 trùng khớp" : "Mức TT22 lệch"}</Tag>} />
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(min(180px,100%),1fr))] gap-2.5">
+        <Kv k="Môn lệch cả năm ≤ 0,5 điểm" v={`${near} / ${c.rows.length}`} />
+        <Kv k="Lệch trung bình cả năm" v={fmt(c.maeCn)} />
+        {hasSem && <Kv k="Lệch trung bình HK2" v={fmt(c.maeHk2)} />}
+        <Kv k="Mức dự đoán → thực tế" v={<span className="flex flex-wrap items-center gap-1.5"><Tag tone={LEVEL_TONE[c.levelPred]}>{c.levelPred}</Tag>→<Tag tone={LEVEL_TONE[c.levelActual]}>{c.levelActual}</Tag></span>} />
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse text-[13.5px]">
+          <thead><tr>{["Môn", ...(hasSem ? ["HK1 thật", "HK2 dự đoán", "HK2 thật", "Lệch HK2"] : []), "Cả năm dự đoán", "Cả năm thật", "Lệch cả năm"].map((h, i) => <th key={h} scope="col" className={`${TH} ${i ? "text-right" : "text-left"}`}>{h}</th>)}</tr></thead>
+          <tbody>{c.rows.map((r) => (
+            <tr key={r.key} className="hover:bg-surface-soft">
+              <th scope="row" className="border-b-[1.5px] border-line px-3 py-2 text-left font-bold">{r.name}</th>
+              {hasSem && <><td className={TD}>{fmt(r.hk1, 1)}</td><td className={`${TD} font-bold`}>{fmt(r.hk2Pred, 1)}</td><td className={TD}>{fmt(r.hk2, 1)}</td><td className={`${TD} font-bold ${errCls(r.errHk2)}`}>{sgn(r.errHk2, 1)}</td></>}
+              <td className={`${TD} font-bold`}>{fmt(r.cnPred, 1)}</td><td className={TD}>{fmt(r.cn, 1)}</td><td className={`${TD} font-bold ${errCls(r.errCn)}`}>{sgn(r.errCn, 1)}</td>
+            </tr>
+          ))}</tbody>
+        </table>
+      </div>
+      <p className="m-0 text-xs font-medium text-muted">Lệch = dự đoán − thực tế. Xanh: lệch không quá 0,5 điểm · vàng: 0,5–1 điểm · đỏ: trên 1 điểm.</p>
+    </Sticker>
+  );
+}
+
+function AccuracyBlock({ initial, models }: { initial: string; models: string[] }) {
+  const [model, setModel] = useState(initial);
+  const acc = useApi<Acc>(`/ai/accuracy?model=${encodeURIComponent(model)}`);
+  const a = acc.data;
+  const main = models.filter((m) => !m.startsWith("XEdu ("));
+  const opts = main.length ? main : [model];
+  return (
+    <Sticker className="flex flex-col gap-4">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <StickerHeader title="Độ sát với thực tế trên toàn khóa lớp 9" description={a ? `${a.n} học sinh · đầu vào ${a.inputs} · ${a.method}` : "So sánh dự đoán với điểm lớp 9 thật trong sổ điểm"} />
+        <SelectField label="Mô hình" value={model} onChange={(e) => setModel(e.target.value)}>{opts.map((m) => <option key={m}>{m}</option>)}</SelectField>
+      </div>
+      {acc.error && <ErrorSticker message={acc.error} onRetry={acc.reload} />}
+      {acc.loading && !a && <LoadingSticker lines={3} />}
+      {a && (
+        <>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(190px,100%),1fr))] gap-2.5">
+            <Kv k="Điểm môn cả năm lệch ≤ 0,5" v={pct(a.cn.w05)} />
+            <Kv k="Điểm môn cả năm lệch ≤ 1" v={pct(a.cn.w10)} />
+            {a.hk2 && <Kv k="Điểm môn HK2 lệch ≤ 0,5" v={pct(a.hk2.w05)} />}
+            {a.hk2 && <Kv k="Điểm môn HK2 lệch ≤ 1" v={pct(a.hk2.w10)} />}
+            <Kv k="ĐTB cả năm lệch ≤ 0,5" v={pct(a.dtb.w05)} />
+            <Kv k="Mức TT22 trùng khớp" v={pct(a.level.match)} />
+            <Kv k="Lệch trung bình (cả năm · HK2)" v={`${fmt(a.cn.mae)} · ${a.hk2 ? fmt(a.hk2.mae) : "—"}`} />
+            <Kv k="Tổng 3 môn thi lệch ≤ 1" v={pct(a.exam.w10)} />
+          </div>
+          {a.formulaMatch !== null && <p className="m-0 text-[13px] font-medium">Kiểm tra công thức trên sổ điểm thật: (HK1 + 2 × HK2) / 3, làm tròn 1 chữ số, trùng với điểm cả năm ở <strong className="num">{pct(a.formulaMatch)}</strong> số ô điểm.</p>}
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(460px,100%),1fr))] gap-5">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-[13.5px]">
+                <thead><tr>{["Môn", "Lệch TB cả năm", "≤ 0,5", "≤ 1", "Lệch TB HK2", "HK2 ≤ 0,5", "HK2 ≤ 1"].map((h, i) => <th key={h} scope="col" className={`${TH} ${i ? "text-right" : "text-left"}`}>{h}</th>)}</tr></thead>
+                <tbody>{a.perSubject.map((r) => (
+                  <tr key={r.key} className="hover:bg-surface-soft">
+                    <th scope="row" className="border-b-[1.5px] border-line px-3 py-2 text-left font-bold">{r.name}</th>
+                    <td className={TD}>{fmt(r.cn.mae)}</td><td className={TD}>{pct(r.cn.w05)}</td><td className={TD}>{pct(r.cn.w10)}</td>
+                    <td className={TD}>{fmt(r.hk2?.mae)}</td><td className={TD}>{pct(r.hk2?.w05)}</td><td className={TD}>{pct(r.hk2?.w10)}</td>
+                  </tr>
+                ))}</tbody>
+              </table>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-[13.5px]">
+                <caption className="pb-2 text-left text-xs font-bold text-muted">Mức TT22: thực tế (hàng) × dự đoán (cột), số học sinh</caption>
+                <thead><tr><th scope="col" className={`${TH} text-left`}>Thực tế</th>{a.level.names.map((n) => <th key={n} scope="col" className={`${TH} text-right`}>{n}</th>)}</tr></thead>
+                <tbody>{a.level.names.map((rn, i) => (
+                  <tr key={rn}>
+                    <th scope="row" className="border-b-[1.5px] border-line px-3 py-2 text-left font-bold">{rn}</th>
+                    {a.level.confusion[i].map((v, j) => <td key={j} className={`${TD} ${i === j ? "bg-mint font-extrabold" : ""}`}>{v}</td>)}
+                  </tr>
+                ))}</tbody>
+              </table>
+            </div>
+          </div>
+          <p className="m-0 text-xs font-medium text-muted">Số liệu là kiểm định chéo trên chính khóa học sinh này (một trường, một khóa), chưa phải kiểm chứng trên khóa hoặc trường khác.</p>
+        </>
+      )}
+    </Sticker>
   );
 }
 
@@ -296,12 +400,12 @@ function Paths({ f }: { f: Pred["facts"] }) {
 
 function MessageBlock({ sid, llms }: { sid: string; llms: string[] }) {
   const [aud, setAud] = useState<(typeof AUD)[number]>("Học sinh");
-  const [llm, setLlm] = useState(llms[0] ?? "");
+  const [pick, setLlm] = useState("");
+  const llm = pick || llms[0] || "";
   const [msg, setMsg] = useState<{ text: string; issues: string[]; source: string } | null>(null);
   const [busy, setBusy] = useState<"template" | "llm" | "save" | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
-  useEffect(() => { if (!llm && llms[0]) setLlm(llms[0]); }, [llms, llm]);
   const gen = async (useLlm: boolean) => {
     setBusy(useLlm ? "llm" : "template"); setErr(null); setSaved(false);
     try { setMsg(await apiSend(`/students/${sid}/message`, "POST", { audience: aud, use_llm: useLlm, llm_model: useLlm ? llm : null })); }
